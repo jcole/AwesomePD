@@ -7,4 +7,5 @@ target 'AwesomePD' do
 
   # Pods for AwesomePD
   pod 'Charts', '~> 3.0.1'
+  pod 'SnapKit', '~> 3.2.0'
 end
