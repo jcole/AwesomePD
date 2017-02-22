@@ -16,12 +16,16 @@ class ViewController: UIViewController {
 
   // Buttons
   var blueButton = UIView()
+  var blueData:[[Double]] = []
+  let blueSet = LineChartDataSet()
+  var blueTime:Double = 0.0
+  
   var redButton = UIView()
+  var redData:[[Double]] = []
+  let redSet = LineChartDataSet()
+  var redTime:Double = 0.0
 
-  // Data sets
-  let setA = LineChartDataSet()
-  let setB = LineChartDataSet()
-  let setTotal = LineChartDataSet()
+  let totalSet = LineChartDataSet()
   
   // MARK: Lifecycle
 
@@ -30,7 +34,12 @@ class ViewController: UIViewController {
     // Do any additional setup after loading the view, typically from a nib.
 
     setupViews()
-    initChartData()
+    initChart()
+  }
+
+  override func viewDidAppear(_ animated: Bool) {
+    setButtonTime(button: blueButton, time: 8.0)
+    setButtonTime(button: redButton, time: 16.0)
   }
 
   // MARK: Setup
@@ -42,18 +51,10 @@ class ViewController: UIViewController {
     view.addSubview(chartView)
     
     // Test Buttons
-    blueButton = UIView()
-    blueButton.backgroundColor = UIColor.cyan
-    blueButton.isUserInteractionEnabled = true
-    blueButton.layer.cornerRadius = 20.0
-    blueButton.addGestureRecognizer(UIPanGestureRecognizer(target: self, action: #selector(buttonPanned(recognizer:))))
+    formatButton(button:blueButton, color: UIColor.cyan)
     view.addSubview(blueButton)
 
-    redButton = UIView()
-    redButton.backgroundColor = UIColor.red
-    redButton.isUserInteractionEnabled = true
-    redButton.layer.cornerRadius = 20.0
-    redButton.addGestureRecognizer(UIPanGestureRecognizer(target: self, action: #selector(buttonPanned(recognizer:))))
+    formatButton(button:redButton, color: UIColor.red)
     view.addSubview(redButton)
 
     // Constraints
@@ -62,114 +63,165 @@ class ViewController: UIViewController {
       make.right.equalTo(self.view).offset(-30.0)
       make.bottom.equalTo(self.view).offset(-80.0)
     }
-    
-    moveButton(button: blueButton, locationX: view.center.x - 100.0)
-    moveButton(button: redButton, locationX: view.center.x + 100.0)
   }
   
-  // MARK: Chart
+  // MARK: Create subviews
+
+  func formatButton(button: UIView, color: UIColor) {
+    button.backgroundColor = color
+    button.isUserInteractionEnabled = true
+    button.layer.cornerRadius = 20.0
+    button.addGestureRecognizer(UIPanGestureRecognizer(target: self, action: #selector(buttonPanned(recognizer:))))
+  }
   
-  func initChartData() {
-    setA.label = "set A"
-    setA.setColor(UIColor.red)
-    setA.fillColor = UIColor.red
-    setA.mode = .cubicBezier
-    setA.drawFilledEnabled = true
-    setA.fillAlpha = 0.3
-
-    (0...20).forEach { (i) in
-      let xValue = Double(i)
-      let yValue = Double(arc4random_uniform(10))
-      setA.values.append(ChartDataEntry(x: xValue, y: yValue))
-    }
+  func initChart() {
+    blueData = randomData()
+    redData = randomData()
     
-    setB.label = "set B"
-    setB.setColor(UIColor.cyan)
-    setB.fillColor = UIColor.cyan
-    setB.mode = .cubicBezier
-    setB.drawFilledEnabled = true
-    setB.fillAlpha = 0.3
+    blueSet.label = "blue set"
+    formatData(set: blueSet, color: UIColor.cyan)
 
-    (0...20).forEach { (i) in
-      let xValue = Double(i)
-      let yValue = Double(arc4random_uniform(10))
-      setB.values.append(ChartDataEntry(x: xValue, y: yValue))
-    }
+    redSet.label = "red set"
+    formatData(set: redSet, color: UIColor.red)
     
-    setTotal.label = "set Total"
-    setTotal.setColor(UIColor.yellow)
-    setTotal.mode = .cubicBezier
-    setTotal.drawFilledEnabled = false
-
-    setTotal.values = calculateTotalValues()
+    totalSet.label = "total set"
+    totalSet.setColor(UIColor.yellow)
+    totalSet.mode = .cubicBezier
+    totalSet.drawFilledEnabled = false
+    totalSet.drawCirclesEnabled = false
+    totalSet.drawValuesEnabled = false
     
-    let chartData = LineChartData(dataSets: [setA, setB, setTotal])
+    refreshData()
+    let chartData = LineChartData(dataSets: [blueSet, redSet, totalSet])
     chartView.data = chartData
   }
-
-  func refreshChartData(set:LineChartDataSet) {
-    (0...set.entryCount - 1).forEach({ (i) in
-      set.entryForIndex(i)?.y += -0.25 + 0.5 * Double(arc4random_uniform(100)) / 100.0
-    })
+  
+  func formatData(set: LineChartDataSet, color: UIColor) {
+    set.setColor(color)
+    set.fillColor = color
+    set.mode = .cubicBezier
+    set.drawFilledEnabled = true
+    set.drawCirclesEnabled = false
+    set.drawValuesEnabled = false
+    set.fillAlpha = 0.3
+  }
+  
+  // MARK: Data
+  
+  func randomData() -> [[Double]] {
+    var data:[[Double]] = []
     
-    setTotal.values = calculateTotalValues()
+    data.append([0, 0])
+    
+    (1...24).forEach { (i) in
+      let xValue = Double(i)
+      let yValue = Double(arc4random_uniform(10))
+      data.append([xValue, yValue])
+    }
+    
+    return data
+  }
+  
+  func chartDataEntries(pairs:[[Double]]) -> [ChartDataEntry] {
+    var entries:[ChartDataEntry] = []
+
+    pairs.forEach { (pair) in
+      entries.append(ChartDataEntry(x: pair[0], y: pair[1]))
+    }
+    
+    return entries
+  }
+  
+  func adjustData(startTime: Double, initData: [[Double]]) -> [[Double]] {
+    var adjusted:[[Double]] = []
+    
+    initData.forEach { (pair) in
+      adjusted.append([pair[0] + startTime, pair[1]])
+    }
+    
+    return adjusted
+  }
+  
+  func refreshData() {
+    let adjustedBlueData = adjustData(startTime: blueTime, initData: blueData)
+    blueSet.values = chartDataEntries(pairs: adjustedBlueData)
+    
+    let adjustedRedData = adjustData(startTime: redTime, initData: redData)
+    redSet.values = chartDataEntries(pairs: adjustedRedData)
+
+    // Calculate totals
+    let sets = [blueSet, redSet]
+    var totalData:[[Double]] = []
+    (0...24).forEach { (xValue) in
+      var totalVal:Double = 0
+      sets.forEach({ (set) in
+        if Double(xValue) >= set.xMin {
+          if let setVal = set.entryForXValue(Double(xValue), closestToY: 0.0)?.y {
+            totalVal += setVal
+          }
+        }
+      })
+      
+      totalData.append([Double(xValue), totalVal])
+    }
+    totalSet.values = chartDataEntries(pairs: totalData)
+    
     chartView.notifyDataSetChanged()
   }
   
-  func calculateTotalValues() -> [ChartDataEntry] {
-    var totalValues:[ChartDataEntry] = []
+  // MARK: Button movement
+  
+  func minLocationX() -> CGFloat {
+    return chartView.frame.minX
+  }
+  
+  func maxLocationX() -> CGFloat {
+    return chartView.frame.maxX
+  }
+  
+  func timeForLocationX(x: CGFloat) -> Double {
+    let minX = minLocationX()
+    let maxX = maxLocationX()
+    return Double(24.0) * Double((x - minX) / (maxX - minX))
+  }
+  
+  func locationForTime(time: Double) -> CGFloat {
+    let minX = minLocationX()
+    let maxX = maxLocationX()
+    return CGFloat(time / 24.0) * (maxX - minX) + minX
+  }
+  
+  func buttonPanned(recognizer: UIPanGestureRecognizer) {
+    // Check bounds of button location
+    let locationX = recognizer.location(in: self.view).x
+    var adjustedLocation:CGFloat = locationX
+    adjustedLocation = max(minLocationX(), adjustedLocation)
+    adjustedLocation = min(maxLocationX(), adjustedLocation)
     
-    (0...20).forEach { (xValue) in
-      let aVal:Double? = setA.entryForXValue(Double(xValue), closestToY: 0.0)?.y
-      let bVal:Double? = setB.entryForXValue(Double(xValue), closestToY: 0.0)?.y
-      
-      var totalVal:Double = 0
-      if aVal != nil {
-        totalVal += aVal!
-      }
-      
-      if bVal != nil {
-        totalVal += bVal!
-      }
-      
-      totalValues.append(ChartDataEntry(x: Double(xValue), y: totalVal))
+    // Adjust data
+    let time = timeForLocationX(x: adjustedLocation)
+    
+    setButtonTime(button: recognizer.view!, time: time)
+  }
+  
+  func setButtonTime(button: UIView, time: Double) {
+    let location = locationForTime(time: time)
+    moveButton(button: button, locationX: location)
+    if button == redButton {
+      redTime = time
+    } else if button == blueButton {
+      blueTime = time
     }
     
-    return totalValues
+    refreshData()
   }
-
-  // MARK: Button
   
-  func moveButton(button:UIView, locationX: CGFloat) {
+  func moveButton(button: UIView, locationX:CGFloat) {
     button.snp.remakeConstraints { (make) in
       make.width.equalTo(100.0)
       make.height.equalTo(40.0)
       make.top.equalTo(chartView.snp.bottom).offset(20.0)
       make.centerX.equalTo(locationX)
-    }
-  }
-
-  // MARK: Gestures
-  
-  func buttonPanned(recognizer: UIPanGestureRecognizer) {
-    let locationX = recognizer.location(in: self.view).x
-
-    var buttonTapped:UIView?
-    var set:LineChartDataSet?
-    
-    if recognizer.view == redButton {
-      buttonTapped = redButton
-      set = setA
-    } else if recognizer.view == blueButton {
-      buttonTapped = blueButton
-      set = setB
-    }
-    
-    if set != nil {
-      refreshChartData(set:set!)
-    }
-    if buttonTapped != nil {
-      moveButton(button:buttonTapped!, locationX: locationX)
     }
   }
   
