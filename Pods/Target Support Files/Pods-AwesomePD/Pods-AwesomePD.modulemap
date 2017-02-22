@@ -1,0 +1,6 @@
+framework module Pods_AwesomePD {
+  umbrella header "Pods-AwesomePD-umbrella.h"
+
+  export *
+  module * { export * }
+}

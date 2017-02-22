@@ -12,6 +12,7 @@
 		1F6353031E5E064D00BD1800 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 1F6353011E5E064D00BD1800 /* Main.storyboard */; };
 		1F6353051E5E064D00BD1800 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 1F6353041E5E064D00BD1800 /* Assets.xcassets */; };
 		1F6353081E5E064D00BD1800 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 1F6353061E5E064D00BD1800 /* LaunchScreen.storyboard */; };
+		A1FB528D078072CAE4448DD0 /* Pods_AwesomePD.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9A23FCF5DFB6112459A173A8 /* Pods_AwesomePD.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -22,6 +23,9 @@
 		1F6353041E5E064D00BD1800 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		1F6353071E5E064D00BD1800 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		1F6353091E5E064D00BD1800 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		9A23FCF5DFB6112459A173A8 /* Pods_AwesomePD.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_AwesomePD.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		A87589D1153773694447DBD5 /* Pods-AwesomePD.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-AwesomePD.release.xcconfig"; path = "Pods/Target Support Files/Pods-AwesomePD/Pods-AwesomePD.release.xcconfig"; sourceTree = "<group>"; };
+		EDD82D494ABDEF462C7A8220 /* Pods-AwesomePD.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-AwesomePD.debug.xcconfig"; path = "Pods/Target Support Files/Pods-AwesomePD/Pods-AwesomePD.debug.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -29,6 +33,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				A1FB528D078072CAE4448DD0 /* Pods_AwesomePD.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -40,6 +45,8 @@
 			children = (
 				1F6352FC1E5E064D00BD1800 /* AwesomePD */,
 				1F6352FB1E5E064D00BD1800 /* Products */,
+				EEC3B2F523BCB31471C953F7 /* Pods */,
+				DC53523A9CC29F068019F211 /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -64,6 +71,23 @@
 			path = AwesomePD;
 			sourceTree = "<group>";
 		};
+		DC53523A9CC29F068019F211 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				9A23FCF5DFB6112459A173A8 /* Pods_AwesomePD.framework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		EEC3B2F523BCB31471C953F7 /* Pods */ = {
+			isa = PBXGroup;
+			children = (
+				EDD82D494ABDEF462C7A8220 /* Pods-AwesomePD.debug.xcconfig */,
+				A87589D1153773694447DBD5 /* Pods-AwesomePD.release.xcconfig */,
+			);
+			name = Pods;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -71,9 +95,12 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 1F63530C1E5E064D00BD1800 /* Build configuration list for PBXNativeTarget "AwesomePD" */;
 			buildPhases = (
+				B310892AC15BE0CA74D100CE /* [CP] Check Pods Manifest.lock */,
 				1F6352F61E5E064D00BD1800 /* Sources */,
 				1F6352F71E5E064D00BD1800 /* Frameworks */,
 				1F6352F81E5E064D00BD1800 /* Resources */,
+				56AEC04C18A92A7027401242 /* [CP] Embed Pods Frameworks */,
+				89394A68E7945099887F761A /* [CP] Copy Pods Resources */,
 			);
 			buildRules = (
 			);
@@ -131,6 +158,54 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXResourcesBuildPhase section */
+
+/* Begin PBXShellScriptBuildPhase section */
+		56AEC04C18A92A7027401242 /* [CP] Embed Pods Frameworks */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "[CP] Embed Pods Frameworks";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-AwesomePD/Pods-AwesomePD-frameworks.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		89394A68E7945099887F761A /* [CP] Copy Pods Resources */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "[CP] Copy Pods Resources";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-AwesomePD/Pods-AwesomePD-resources.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		B310892AC15BE0CA74D100CE /* [CP] Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "[CP] Check Pods Manifest.lock";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_ROOT}/../Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n";
+			showEnvVarsInLog = 0;
+		};
+/* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
 		1F6352F61E5E064D00BD1800 /* Sources */ = {
@@ -259,6 +334,7 @@
 		};
 		1F63530D1E5E064D00BD1800 /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = EDD82D494ABDEF462C7A8220 /* Pods-AwesomePD.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				DEVELOPMENT_TEAM = R4WBH7HRLU;
@@ -272,6 +348,7 @@
 		};
 		1F63530E1E5E064D00BD1800 /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = A87589D1153773694447DBD5 /* Pods-AwesomePD.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				DEVELOPMENT_TEAM = R4WBH7HRLU;
