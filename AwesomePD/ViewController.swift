@@ -220,7 +220,12 @@ class ViewController: UIViewController {
   func timeForLocationX(x: CGFloat) -> Double {
     let minX = minLocationX()
     let maxX = maxLocationX()
-    return minTime + (maxTime - minTime) * Double((x - minX) / (maxX - minX))
+    var calcTime = minTime + (maxTime - minTime) * Double((x - minX) / (maxX - minX))
+    
+    // round to nearest step
+    calcTime = calcTime - calcTime.truncatingRemainder(dividingBy: timeStep)
+    
+    return calcTime
   }
   
   func locationForTime(time: Double) -> CGFloat {
