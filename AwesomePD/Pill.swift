@@ -62,7 +62,7 @@ class Pill: UIView {
   
   // TODO: Replace this with actual profile data
   
-  static func randomData() -> [[Double]] {
+  static func randomData(magnitude:Double) -> [[Double]] {
     var data:[[Double]] = []
     
     let numTimeSteps = 24 * 4
@@ -72,7 +72,7 @@ class Pill: UIView {
     
     (1...numTimeSteps).forEach { (i) in
       let xValue = Double(i) * timeStep
-      let yValue = Double(arc4random_uniform(10))
+      let yValue = magnitude * Double(sin(xValue))
       data.append([xValue, yValue])
     }
     
