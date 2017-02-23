@@ -348,7 +348,7 @@
 				DEVELOPMENT_TEAM = R4WBH7HRLU;
 				INFOPLIST_FILE = AwesomePD/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = R4WBH7HRLU.com.teamawesome.awesomePD;
+				PRODUCT_BUNDLE_IDENTIFIER = com.jeffcole.AwesomePD;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 3.0;
 			};
@@ -362,7 +362,7 @@
 				DEVELOPMENT_TEAM = R4WBH7HRLU;
 				INFOPLIST_FILE = AwesomePD/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = R4WBH7HRLU.com.teamawesome.awesomePD;
+				PRODUCT_BUNDLE_IDENTIFIER = com.jeffcole.AwesomePD;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 3.0;
 			};
