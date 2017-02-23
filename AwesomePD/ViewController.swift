@@ -31,6 +31,9 @@ class ViewController: UIViewController {
   let redSet = LineChartDataSet()
   var redTime:Double = 0.0
 
+  // Treatment selection container
+  var treatmentSidebar = UIView()
+  
   // Data
   let totalSet = LineChartDataSet()
   
@@ -40,13 +43,8 @@ class ViewController: UIViewController {
     super.viewDidLoad()
     // Do any additional setup after loading the view, typically from a nib.
 
+    initData()
     setupViews()
-    initChart()
-  }
-
-  override func viewDidAppear(_ animated: Bool) {
-    setButtonTime(button: blueButton, time: 8.0)
-    setButtonTime(button: redButton, time: 16.0)
   }
 
   // MARK: Create subviews
@@ -60,6 +58,14 @@ class ViewController: UIViewController {
     chartView.xAxis.labelPosition = .bottom
     view.addSubview(chartView)
     
+    // Sidebar
+    treatmentSidebar.backgroundColor = UIColor.clear
+    treatmentSidebar.layer.borderColor = UIColor.black.cgColor
+    treatmentSidebar.layer.borderWidth = 2.0
+    treatmentSidebar.isUserInteractionEnabled = true
+    treatmentSidebar.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(sidebarTapped)))
+    view.addSubview(treatmentSidebar)
+    
     // Test Buttons
     formatButton(button:blueButton, color: UIColor.cyan)
     view.addSubview(blueButton)
@@ -68,11 +74,19 @@ class ViewController: UIViewController {
     view.addSubview(redButton)
 
     // Constraints
+    treatmentSidebar.snp.makeConstraints { (make) in
+      make.top.equalTo(self.view).offset(30.0)
+      make.right.bottom.equalTo(self.view).offset(-30.0)
+      make.width.equalTo(200.0)
+    }
+
     chartView.snp.makeConstraints { (make) in
       make.left.top.equalTo(self.view).offset(30.0)
-      make.right.equalTo(self.view).offset(-30.0)
+      make.right.equalTo(self.treatmentSidebar.snp.left).offset(-30.0)
       make.bottom.equalTo(self.view).offset(-80.0)
     }
+    
+    initChart()
   }
   
   func formatButton(button: UIView, color: UIColor) {
@@ -83,9 +97,6 @@ class ViewController: UIViewController {
   }
   
   func initChart() {
-    blueData = randomData()
-    redData = randomData()
-    
     blueSet.label = "blue set"
     formatData(set: blueSet, color: UIColor.cyan)
 
@@ -98,10 +109,6 @@ class ViewController: UIViewController {
     totalSet.drawFilledEnabled = false
     totalSet.drawCirclesEnabled = false
     totalSet.drawValuesEnabled = false
-    
-    refreshData()
-    let chartData = LineChartData(dataSets: [blueSet, redSet, totalSet])
-    chartView.data = chartData
   }
   
   func formatData(set: LineChartDataSet, color: UIColor) {
@@ -116,8 +123,9 @@ class ViewController: UIViewController {
   
   // MARK: Data
   
-  func numTimeSteps() -> Int {
-    return Int((maxTime - minTime) / timeStep)
+  func initData() {
+    blueData = randomData()
+    redData = randomData()
   }
   
   func randomData() -> [[Double]] {
@@ -132,6 +140,10 @@ class ViewController: UIViewController {
     }
     
     return data
+  }
+  
+  func numTimeSteps() -> Int {
+    return Int((maxTime - minTime) / timeStep)
   }
   
   func chartDataEntries(pairs:[[Double]]) -> [ChartDataEntry] {
@@ -154,7 +166,7 @@ class ViewController: UIViewController {
     return adjusted
   }
   
-  func refreshData() {
+  func recalcData() {
     let adjustedBlueData = adjustData(startTime: blueTime, initData: blueData)
     blueSet.values = chartDataEntries(pairs: adjustedBlueData)
     
@@ -178,8 +190,6 @@ class ViewController: UIViewController {
       totalData.append([Double(xValue), totalVal])
     }
     totalSet.values = chartDataEntries(pairs: totalData)
-    
-    chartView.notifyDataSetChanged()
   }
   
   // MARK: Button movement
@@ -215,6 +225,8 @@ class ViewController: UIViewController {
     let time = timeForLocationX(x: adjustedLocation)
     
     setButtonTime(button: recognizer.view!, time: time)
+    recalcData()
+    chartView.notifyDataSetChanged()
   }
   
   func setButtonTime(button: UIView, time: Double) {
@@ -225,8 +237,6 @@ class ViewController: UIViewController {
     } else if button == blueButton {
       blueTime = time
     }
-    
-    refreshData()
   }
   
   func moveButton(button: UIView, locationX:CGFloat) {
@@ -236,6 +246,25 @@ class ViewController: UIViewController {
       make.top.equalTo(chartView.snp.bottom).offset(20.0)
       make.centerX.equalTo(locationX)
     }
+  }
+  
+  // MARK: Sidebar
+  
+  func sidebarTapped() {
+    addButtons()
+  }
+  
+  func addButtons() {
+    // Set button after chart frame has laid out
+    setButtonTime(button: blueButton, time: 8.0)
+    setButtonTime(button: redButton, time: 16.0)
+    
+    recalcData()
+    
+    // specify data sets
+    chartView.data = LineChartData(dataSets: [blueSet, redSet, totalSet])
+    
+    chartView.notifyDataSetChanged()
   }
   
 }
