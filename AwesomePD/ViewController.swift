@@ -157,6 +157,20 @@ class ViewController: UIViewController, PillPickerDelegate {
     self.pills.append(pill)
     self.view.addSubview(pill)
     
+    // Animate pill
+    pill.transform = CGAffineTransform(scaleX: 0.2, y: 0.2)
+    UIView.animate(withDuration: 0.2,
+                   delay: 0.0,
+                   usingSpringWithDamping: 0.2,
+                   initialSpringVelocity: 6.0,
+                   options: .allowUserInteraction,
+                   animations: {
+                    pill.transform = .identity
+                    },
+                   completion: nil
+    )
+
+    
     pill.isUserInteractionEnabled = true
     pill.addGestureRecognizer(UIPanGestureRecognizer(target: self, action: #selector(pillPanned(recognizer:))))
 

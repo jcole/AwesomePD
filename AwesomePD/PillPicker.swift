@@ -76,7 +76,19 @@ class PillPicker: UIView {
   
   func pillTapped(sender: UITapGestureRecognizer) {
     if let pill = sender.view as? Pill {
-      self.delegate?.pillSelected(pill: pill)
+      // Animate pill
+      pill.transform = CGAffineTransform(scaleX: 0.5, y: 0.5)
+      UIView.animate(withDuration: 0.2,
+                     delay: 0.0,
+                     usingSpringWithDamping: 0.2,
+                     initialSpringVelocity: 6.0,
+                     options: .allowUserInteraction,
+                     animations: {
+                      pill.transform = .identity
+                      },
+                     completion: { (finished) in
+        self.delegate?.pillSelected(pill: pill)
+      })
     }
   }
   

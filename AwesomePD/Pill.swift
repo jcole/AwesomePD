@@ -39,6 +39,8 @@ class Pill: UIView {
   
   func setup() {
     backgroundColor = color
+    layer.borderColor = UIColor.lightGray.cgColor
+    layer.borderWidth = 1.0
     layer.cornerRadius = 20.0
   }
 
