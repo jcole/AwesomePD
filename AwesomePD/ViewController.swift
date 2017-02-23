@@ -10,31 +10,19 @@ import UIKit
 import Charts
 import SnapKit
 
-class ViewController: UIViewController {
+class ViewController: UIViewController, PillPickerDelegate {
 
   // Constants
   let minTime:Double = 0.0
   let maxTime:Double = 24.0
   let timeStep:Double = 0.25
   
-  // Chart
-  var chartView = LineChartView()
-
-  // Buttons
-  var blueButton = UIView()
-  var blueData:[[Double]] = []
-  let blueSet = LineChartDataSet()
-  var blueTime:Double = 0.0
+  // Views
+  let chartView = LineChartView()
+  let pillPicker = PillPicker()
+  var pills:[Pill] = []
   
-  var redButton = UIView()
-  var redData:[[Double]] = []
-  let redSet = LineChartDataSet()
-  var redTime:Double = 0.0
-
-  // Treatment selection container
-  var treatmentSidebar = UIView()
-  
-  // Data
+  // Calculated total data
   let totalSet = LineChartDataSet()
   
   // MARK: Lifecycle
@@ -43,52 +31,22 @@ class ViewController: UIViewController {
     super.viewDidLoad()
     // Do any additional setup after loading the view, typically from a nib.
 
-    initData()
-    setupViews()
+    setup()
   }
 
-  // MARK: Create subviews
+  // MARK: Setup subviews
   
-  func setupViews() {
+  func setup() {
     // Chart
-    chartView.backgroundColor = UIColor.black
-    chartView.chartDescription = nil
-    chartView.drawGridBackgroundEnabled = false
-    chartView.legend.textColor = UIColor.white
-    chartView.leftAxis.labelTextColor = UIColor.white
-    chartView.leftAxis.axisMinimum = 0.0
-    chartView.leftAxis.drawGridLinesEnabled = false
-    let lowLimitLine = ChartLimitLine(limit: 4.0, label: "Low")
-    lowLimitLine.lineColor = UIColor.green
-    chartView.leftAxis.addLimitLine(lowLimitLine)
-    let hightLimitLine = ChartLimitLine(limit: 10.0, label: "High")
-    hightLimitLine.lineColor = UIColor.green
-    chartView.leftAxis.addLimitLine(hightLimitLine)
-    chartView.rightAxis.enabled = false
-    chartView.xAxis.labelTextColor = UIColor.white
-    chartView.xAxis.labelPosition = .bottom
-    chartView.xAxis.axisMinimum = minTime
-    chartView.xAxis.axisMaximum = maxTime
-    chartView.xAxis.drawGridLinesEnabled = true
+    formatChart()
     view.addSubview(chartView)
     
-    // Sidebar
-    treatmentSidebar.backgroundColor = UIColor.clear
-    treatmentSidebar.layer.borderColor = UIColor.black.cgColor
-    treatmentSidebar.layer.borderWidth = 2.0
-    treatmentSidebar.isUserInteractionEnabled = true
-    treatmentSidebar.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(sidebarTapped)))
-    view.addSubview(treatmentSidebar)
-    
-    // Test Buttons
-    formatButton(button:blueButton, color: UIColor.cyan)
-    view.addSubview(blueButton)
-
-    formatButton(button:redButton, color: UIColor.red)
-    view.addSubview(redButton)
+    // Pillpicker
+    pillPicker.delegate = self
+    view.addSubview(pillPicker)
 
     // Constraints
-    treatmentSidebar.snp.makeConstraints { (make) in
+    pillPicker.snp.makeConstraints { (make) in
       make.top.equalTo(self.view).offset(30.0)
       make.right.equalTo(self.view).offset(-30.0)
       make.bottom.equalTo(self.chartView)
@@ -97,27 +55,44 @@ class ViewController: UIViewController {
 
     chartView.snp.makeConstraints { (make) in
       make.left.top.equalTo(self.view).offset(30.0)
-      make.right.equalTo(self.treatmentSidebar.snp.left).offset(-30.0)
+      make.right.equalTo(self.pillPicker.snp.left).offset(-30.0)
       make.bottom.equalTo(self.view).offset(-80.0)
     }
+  }
+  
+  func formatChart() {
+    // General chart properties
+    chartView.backgroundColor = UIColor.black
+    chartView.chartDescription = nil
+    chartView.drawGridBackgroundEnabled = false
+    chartView.legend.textColor = UIColor.white
     
-    initChart()
-  }
-  
-  func formatButton(button: UIView, color: UIColor) {
-    button.backgroundColor = color
-    button.isUserInteractionEnabled = true
-    button.layer.cornerRadius = 20.0
-    button.addGestureRecognizer(UIPanGestureRecognizer(target: self, action: #selector(buttonPanned(recognizer:))))
-  }
-  
-  func initChart() {
-    blueSet.label = "blue pill"
-    formatData(set: blueSet, color: UIColor.cyan)
+    // Left axis
+    chartView.leftAxis.labelTextColor = UIColor.white
+    chartView.leftAxis.axisMinimum = 0.0
+    chartView.leftAxis.axisMaximum = 20.0
+    chartView.leftAxis.drawGridLinesEnabled = false
+    let lowLimitLine = ChartLimitLine(limit: 4.0, label: "Low")
+    lowLimitLine.lineColor = UIColor.green
+    lowLimitLine.valueTextColor = UIColor.white
+    chartView.leftAxis.addLimitLine(lowLimitLine)
 
-    redSet.label = "red pill"
-    formatData(set: redSet, color: UIColor.red)
+    let hightLimitLine = ChartLimitLine(limit: 10.0, label: "High")
+    hightLimitLine.lineColor = UIColor.green
+    hightLimitLine.valueTextColor = UIColor.white
+    chartView.leftAxis.addLimitLine(hightLimitLine)
     
+    // Right axis
+    chartView.rightAxis.enabled = false
+
+    // Horizontal axis
+    chartView.xAxis.labelTextColor = UIColor.white
+    chartView.xAxis.labelPosition = .bottom
+    chartView.xAxis.axisMinimum = minTime
+    chartView.xAxis.axisMaximum = maxTime
+    chartView.xAxis.drawGridLinesEnabled = true
+    
+    // Total data set
     totalSet.label = "total effect"
     totalSet.setColor(UIColor.yellow)
     totalSet.mode = .cubicBezier
@@ -126,36 +101,7 @@ class ViewController: UIViewController {
     totalSet.drawValuesEnabled = false
   }
   
-  func formatData(set: LineChartDataSet, color: UIColor) {
-    set.setColor(color)
-    set.fillColor = color
-    set.mode = .cubicBezier
-    set.drawFilledEnabled = true
-    set.drawCirclesEnabled = false
-    set.drawValuesEnabled = false
-    set.fillAlpha = 0.3
-  }
-  
-  // MARK: Data
-  
-  func initData() {
-    blueData = randomData()
-    redData = randomData()
-  }
-  
-  func randomData() -> [[Double]] {
-    var data:[[Double]] = []
-    
-    data.append([0, 0])
-    
-    (1...numTimeSteps()).forEach { (i) in
-      let xValue = Double(i) * timeStep
-      let yValue = Double(arc4random_uniform(10))
-      data.append([xValue, yValue])
-    }
-    
-    return data
-  }
+  // MARK: Data methods
   
   func numTimeSteps() -> Int {
     return Int((maxTime - minTime) / timeStep)
@@ -171,43 +117,7 @@ class ViewController: UIViewController {
     return entries
   }
   
-  func adjustData(startTime: Double, initData: [[Double]]) -> [[Double]] {
-    var adjusted:[[Double]] = []
-    
-    initData.forEach { (pair) in
-      adjusted.append([pair[0] + startTime, pair[1]])
-    }
-    
-    return adjusted
-  }
-  
-  func recalcData() {
-    let adjustedBlueData = adjustData(startTime: blueTime, initData: blueData)
-    blueSet.values = chartDataEntries(pairs: adjustedBlueData)
-    
-    let adjustedRedData = adjustData(startTime: redTime, initData: redData)
-    redSet.values = chartDataEntries(pairs: adjustedRedData)
-
-    // Calculate totals
-    let sets = [blueSet, redSet]
-    var totalData:[[Double]] = []
-    (0...numTimeSteps()).forEach { (step) in
-      let xValue:Double = Double(step) * timeStep
-      var totalVal:Double = 0
-      sets.forEach({ (set) in
-        if Double(xValue) >= set.xMin {
-          if let setVal = set.entryForXValue(Double(xValue), closestToY: 0.0)?.y {
-            totalVal += setVal
-          }
-        }
-      })
-      
-      totalData.append([Double(xValue), totalVal])
-    }
-    totalSet.values = chartDataEntries(pairs: totalData)
-  }
-  
-  // MARK: Button movement
+  // MARK: Pill movement
   
   func minLocationX() -> CGFloat {
     return chartView.frame.minX
@@ -234,33 +144,77 @@ class ViewController: UIViewController {
     return CGFloat(time / (maxTime - minTime)) * (maxX - minX) + minX
   }
   
-  func buttonPanned(recognizer: UIPanGestureRecognizer) {
-    // Check bounds of button location
-    let locationX = recognizer.location(in: self.view).x
-    var adjustedLocation:CGFloat = locationX
-    adjustedLocation = max(minLocationX(), adjustedLocation)
-    adjustedLocation = min(maxLocationX(), adjustedLocation)
+  // MARK: PillPickerDelegate
+  
+  func pillSelected(pill: Pill) {
+    let pillCopy = pill.clone()
+    addPill(pill: pillCopy)
+  }
+
+  // MARK: Pills
+
+  func addPill(pill: Pill) {
+    self.pills.append(pill)
+    self.view.addSubview(pill)
     
-    // Adjust data
-    let time = timeForLocationX(x: adjustedLocation)
+    pill.isUserInteractionEnabled = true
+    pill.addGestureRecognizer(UIPanGestureRecognizer(target: self, action: #selector(pillPanned(recognizer:))))
+
+    pill.startTime = 12.0
+    adjustPillLocationBasedOnStartTime(pill: pill)
     
-    setButtonTime(button: recognizer.view!, time: time)
     recalcData()
+  }
+  
+  func recalcData() {
+    var sets:[LineChartDataSet] = []
+    
+    // Create sets for each pill
+    pills.forEach { (pill) in
+      let set = LineChartDataSet()
+      formatPillDataSet(set: set, pill: pill)
+      set.values = chartDataEntries(pairs: pill.adjustedTimeData())
+      sets.append(set)
+    }
+    
+    // Calculate totals
+    var totalData:[[Double]] = []
+    (0...numTimeSteps()).forEach { (step) in
+      let xValue:Double = Double(step) * timeStep
+      var totalVal:Double = 0
+      sets.forEach({ (set) in
+        if Double(xValue) >= set.xMin {
+          if let setVal = set.entryForXValue(Double(xValue), closestToY: 0.0)?.y {
+            totalVal += setVal
+          }
+        }
+      })
+      
+      totalData.append([Double(xValue), totalVal])
+    }
+    totalSet.values = chartDataEntries(pairs: totalData)
+    sets.append(totalSet)
+  
+    // Refresh chart with new sets
+    chartView.data = LineChartData(dataSets: sets)
     chartView.notifyDataSetChanged()
   }
   
-  func setButtonTime(button: UIView, time: Double) {
-    let location = locationForTime(time: time)
-    moveButton(button: button, locationX: location)
-    if button == redButton {
-      redTime = time
-    } else if button == blueButton {
-      blueTime = time
-    }
+  func formatPillDataSet(set: LineChartDataSet, pill: Pill) {
+    set.label = pill.name
+    set.setColor(pill.color)
+    set.fillColor = pill.color
+    set.mode = .cubicBezier
+    set.drawFilledEnabled = true
+    set.drawCirclesEnabled = false
+    set.drawValuesEnabled = false
+    set.fillAlpha = 0.3
   }
   
-  func moveButton(button: UIView, locationX:CGFloat) {
-    button.snp.remakeConstraints { (make) in
+  func adjustPillLocationBasedOnStartTime(pill: Pill) {
+    let locationX = locationForTime(time: pill.startTime)
+
+    pill.snp.remakeConstraints { (make) in
       make.width.equalTo(100.0)
       make.height.equalTo(40.0)
       make.top.equalTo(chartView.snp.bottom).offset(20.0)
@@ -268,24 +222,24 @@ class ViewController: UIViewController {
     }
   }
   
-  // MARK: Sidebar
-  
-  func sidebarTapped() {
-    addButtons()
+  func pillPanned(recognizer: UIPanGestureRecognizer) {
+    if let pill = recognizer.view as? Pill {
+      // Check bounds of button location
+      let locationX = recognizer.location(in: self.view).x
+      var adjustedLocation:CGFloat = locationX
+      adjustedLocation = max(minLocationX(), adjustedLocation)
+      adjustedLocation = min(maxLocationX(), adjustedLocation)
+
+      // Calculate time based on location
+      let time = timeForLocationX(x: adjustedLocation)
+      
+      // Re-position pill
+      adjustPillLocationBasedOnStartTime(pill: pill)
+
+      // Adjust data
+      pill.startTime = time
+      recalcData()
+    }
   }
-  
-  func addButtons() {
-    // Set button after chart frame has laid out
-    setButtonTime(button: blueButton, time: 8.0)
-    setButtonTime(button: redButton, time: 16.0)
-    
-    recalcData()
-    
-    // specify data sets
-    chartView.data = LineChartData(dataSets: [blueSet, redSet, totalSet])
-    
-    chartView.notifyDataSetChanged()
-  }
-  
 }
 
