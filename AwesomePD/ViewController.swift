@@ -53,9 +53,23 @@ class ViewController: UIViewController {
     // Chart
     chartView.backgroundColor = UIColor.black
     chartView.chartDescription = nil
+    chartView.drawGridBackgroundEnabled = false
+    chartView.legend.textColor = UIColor.white
     chartView.leftAxis.labelTextColor = UIColor.white
+    chartView.leftAxis.axisMinimum = 0.0
+    chartView.leftAxis.drawGridLinesEnabled = false
+    let lowLimitLine = ChartLimitLine(limit: 4.0, label: "Low")
+    lowLimitLine.lineColor = UIColor.green
+    chartView.leftAxis.addLimitLine(lowLimitLine)
+    let hightLimitLine = ChartLimitLine(limit: 10.0, label: "High")
+    hightLimitLine.lineColor = UIColor.green
+    chartView.leftAxis.addLimitLine(hightLimitLine)
+    chartView.rightAxis.enabled = false
     chartView.xAxis.labelTextColor = UIColor.white
     chartView.xAxis.labelPosition = .bottom
+    chartView.xAxis.axisMinimum = minTime
+    chartView.xAxis.axisMaximum = maxTime
+    chartView.xAxis.drawGridLinesEnabled = true
     view.addSubview(chartView)
     
     // Sidebar
@@ -76,7 +90,8 @@ class ViewController: UIViewController {
     // Constraints
     treatmentSidebar.snp.makeConstraints { (make) in
       make.top.equalTo(self.view).offset(30.0)
-      make.right.bottom.equalTo(self.view).offset(-30.0)
+      make.right.equalTo(self.view).offset(-30.0)
+      make.bottom.equalTo(self.chartView)
       make.width.equalTo(200.0)
     }
 
@@ -97,13 +112,13 @@ class ViewController: UIViewController {
   }
   
   func initChart() {
-    blueSet.label = "blue set"
+    blueSet.label = "blue pill"
     formatData(set: blueSet, color: UIColor.cyan)
 
-    redSet.label = "red set"
+    redSet.label = "red pill"
     formatData(set: redSet, color: UIColor.red)
     
-    totalSet.label = "total set"
+    totalSet.label = "total effect"
     totalSet.setColor(UIColor.yellow)
     totalSet.mode = .cubicBezier
     totalSet.drawFilledEnabled = false
