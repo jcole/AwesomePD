@@ -12,6 +12,12 @@ import SnapKit
 
 class ViewController: UIViewController {
 
+  // Constants
+  let minTime:Double = 0.0
+  let maxTime:Double = 24.0
+  let timeStep:Double = 0.25
+  
+  // Chart
   var chartView = LineChartView()
 
   // Buttons
@@ -25,6 +31,7 @@ class ViewController: UIViewController {
   let redSet = LineChartDataSet()
   var redTime:Double = 0.0
 
+  // Data
   let totalSet = LineChartDataSet()
   
   // MARK: Lifecycle
@@ -42,12 +49,15 @@ class ViewController: UIViewController {
     setButtonTime(button: redButton, time: 16.0)
   }
 
-  // MARK: Setup
+  // MARK: Create subviews
   
   func setupViews() {
     // Chart
     chartView.backgroundColor = UIColor.black
     chartView.chartDescription = nil
+    chartView.leftAxis.labelTextColor = UIColor.white
+    chartView.xAxis.labelTextColor = UIColor.white
+    chartView.xAxis.labelPosition = .bottom
     view.addSubview(chartView)
     
     // Test Buttons
@@ -65,8 +75,6 @@ class ViewController: UIViewController {
     }
   }
   
-  // MARK: Create subviews
-
   func formatButton(button: UIView, color: UIColor) {
     button.backgroundColor = color
     button.isUserInteractionEnabled = true
@@ -108,13 +116,17 @@ class ViewController: UIViewController {
   
   // MARK: Data
   
+  func numTimeSteps() -> Int {
+    return Int((maxTime - minTime) / timeStep)
+  }
+  
   func randomData() -> [[Double]] {
     var data:[[Double]] = []
     
     data.append([0, 0])
     
-    (1...24).forEach { (i) in
-      let xValue = Double(i)
+    (1...numTimeSteps()).forEach { (i) in
+      let xValue = Double(i) * timeStep
       let yValue = Double(arc4random_uniform(10))
       data.append([xValue, yValue])
     }
@@ -152,7 +164,8 @@ class ViewController: UIViewController {
     // Calculate totals
     let sets = [blueSet, redSet]
     var totalData:[[Double]] = []
-    (0...24).forEach { (xValue) in
+    (0...numTimeSteps()).forEach { (step) in
+      let xValue:Double = Double(step) * timeStep
       var totalVal:Double = 0
       sets.forEach({ (set) in
         if Double(xValue) >= set.xMin {
@@ -182,13 +195,13 @@ class ViewController: UIViewController {
   func timeForLocationX(x: CGFloat) -> Double {
     let minX = minLocationX()
     let maxX = maxLocationX()
-    return Double(24.0) * Double((x - minX) / (maxX - minX))
+    return minTime + (maxTime - minTime) * Double((x - minX) / (maxX - minX))
   }
   
   func locationForTime(time: Double) -> CGFloat {
     let minX = minLocationX()
     let maxX = maxLocationX()
-    return CGFloat(time / 24.0) * (maxX - minX) + minX
+    return CGFloat(time / (maxTime - minTime)) * (maxX - minX) + minX
   }
   
   func buttonPanned(recognizer: UIPanGestureRecognizer) {
