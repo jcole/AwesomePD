@@ -63,18 +63,36 @@ class Pill: UIView {
   }
   
   // TODO: Replace this with actual profile data
+
+  static func getAvailablePills() -> [Pill] {
+    let pills = [
+      Pill(name: "blue pill", color: .cyan, profileData: Pill.randomData(magnitude: 8.0)),
+      Pill(name: "red pill", color: .red, profileData: Pill.randomData(magnitude: 4.0)),
+      Pill(name: "green pill", color: .green, profileData: Pill.randomData(magnitude: 2.0)),
+      Pill(name: "purple pill", color: .purple, profileData: Pill.randomData(magnitude: 1.0)),
+      ]
+    
+    return pills
+  }
   
   static func randomData(magnitude:Double) -> [[Double]] {
     var data:[[Double]] = []
     
     let numTimeSteps = 24 * 4
     let timeStep:Double = 0.25
+    let fudgeX:Double = 0.5
+    var hitZero:Bool = false
     
     data.append([0, 0])
     
     (1...numTimeSteps).forEach { (i) in
       let xValue = Double(i) * timeStep
-      let yValue = magnitude * Double(sin(xValue))
+      var yValue = magnitude * Double(sin(xValue * fudgeX))
+      if hitZero || yValue <= 0.0 {
+        yValue = 0.0
+        hitZero = true
+      }
+      
       data.append([xValue, yValue])
     }
     

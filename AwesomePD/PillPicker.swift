@@ -37,19 +37,8 @@ class PillPicker: UIView {
   
   // MARK: Setup pills
   
-  func getAvailablePills() -> [Pill] {
-    let pills = [
-      Pill(name: "blue pill", color: .cyan, profileData: Pill.randomData(magnitude: 8.0)),
-      Pill(name: "red pill", color: .red, profileData: Pill.randomData(magnitude: 4.0)),
-      Pill(name: "green pill", color: .green, profileData: Pill.randomData(magnitude: 2.0)),
-      Pill(name: "purple pill", color: .purple, profileData: Pill.randomData(magnitude: 1.0)),
-    ]
-    
-    return pills
-  }
-  
   func setupPills() {
-    pills = getAvailablePills()
+    pills = Pill.getAvailablePills()
     var lastPill:Pill? = nil
     
     pills.forEach { (pill) in
