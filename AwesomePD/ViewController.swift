@@ -13,14 +13,15 @@ import SnapKit
 class ViewController: UIViewController, PillPickerDelegate {
 
   // Constants
-  let minTime:Double = 0.0
-  let maxTime:Double = 24.0
-  let timeStep:Double = 0.25
+  let minTime: Double = 0.0
+  let maxTime: Double = 24.0
+  let timeStep: Double = 0.25
   
   // Views
   let chartView = LineChartView()
   let pillPicker = PillPicker()
-  var pills:[Pill] = []
+  var pills: [Pill] = []
+  var pillLongPressed: Pill?
   
   // Calculated total data
   let totalSet = LineChartDataSet()
@@ -37,6 +38,9 @@ class ViewController: UIViewController, PillPickerDelegate {
   // MARK: Setup subviews
   
   func setup() {
+    view.isUserInteractionEnabled = true
+    view.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(screenTapped)))
+    
     // Chart
     formatChart()
     view.addSubview(chartView)
@@ -70,14 +74,14 @@ class ViewController: UIViewController, PillPickerDelegate {
     // Left axis
     chartView.leftAxis.labelTextColor = UIColor.white
     chartView.leftAxis.axisMinimum = 0.0
-    chartView.leftAxis.axisMaximum = 20.0
+    chartView.leftAxis.axisMaximum = 10.0
     chartView.leftAxis.drawGridLinesEnabled = false
     let lowLimitLine = ChartLimitLine(limit: 4.0, label: "Low")
     lowLimitLine.lineColor = UIColor.green
     lowLimitLine.valueTextColor = UIColor.white
     chartView.leftAxis.addLimitLine(lowLimitLine)
 
-    let hightLimitLine = ChartLimitLine(limit: 10.0, label: "High")
+    let hightLimitLine = ChartLimitLine(limit: 6.0, label: "High")
     hightLimitLine.lineColor = UIColor.green
     hightLimitLine.valueTextColor = UIColor.white
     chartView.leftAxis.addLimitLine(hightLimitLine)
@@ -149,13 +153,14 @@ class ViewController: UIViewController, PillPickerDelegate {
   func pillSelected(pill: Pill) {
     let pillCopy = pill.clone()
     addPill(pill: pillCopy)
+    stopCurrentPillLongPressed()
   }
 
   // MARK: Pills
 
   func addPill(pill: Pill) {
-    self.pills.append(pill)
-    self.view.addSubview(pill)
+    pills.append(pill)
+    view.addSubview(pill)
     
     // Animate pill
     pill.transform = CGAffineTransform(scaleX: 0.2, y: 0.2)
@@ -170,14 +175,26 @@ class ViewController: UIViewController, PillPickerDelegate {
                    completion: nil
     )
 
-    
+    // Add gestures
     pill.isUserInteractionEnabled = true
     pill.addGestureRecognizer(UIPanGestureRecognizer(target: self, action: #selector(pillPanned(recognizer:))))
-
+    let longPress = UILongPressGestureRecognizer(target: self, action: #selector(pillLongPressed(recognizer:)))
+    longPress.minimumPressDuration = 0.75
+    pill.addGestureRecognizer(longPress)
+    pill.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(pillTapped(recognizer:))))
+    
     pill.startTime = 12.0
     adjustPillLocationBasedOnStartTime(pill: pill)
     
     recalcData()
+  }
+  
+  func removePill(pill: Pill) {
+    if let index = pills.index(of: pill) {
+      pills.remove(at: index)
+      pill.removeFromSuperview()
+      recalcData()
+    }
   }
   
   func recalcData() {
@@ -237,6 +254,8 @@ class ViewController: UIViewController, PillPickerDelegate {
   }
   
   func pillPanned(recognizer: UIPanGestureRecognizer) {
+    stopCurrentPillLongPressed()
+    
     if let pill = recognizer.view as? Pill {
       // Check bounds of button location
       let locationX = recognizer.location(in: self.view).x
@@ -255,5 +274,48 @@ class ViewController: UIViewController, PillPickerDelegate {
       recalcData()
     }
   }
+  
+  func pillLongPressed(recognizer: UIPanGestureRecognizer) {
+    stopCurrentPillLongPressed()
+    
+    if let pill = recognizer.view as? Pill {
+      pillLongPressed = pill
+      
+      // Animate pill shimmy
+      pill.transform = CGAffineTransform(rotationAngle: CGFloat.pi * -3.0 / 180.0)
+      UIView.animate(withDuration: 0.1,
+                     delay: 0.0,
+                     options: [.allowUserInteraction, .repeat, .autoreverse],
+                     animations: {
+        pill.transform = CGAffineTransform(rotationAngle: CGFloat.pi * 3.0 / 180.0)
+      }, completion: nil
+      )
+    }
+  }
+  
+  func pillTapped(recognizer: UIPanGestureRecognizer) {
+    if let pill = recognizer.view as? Pill {
+      if pill == pillLongPressed {
+        removePill(pill: pill)
+      }
+    }
+    
+    pillLongPressed = nil
+  }
+  
+  func stopCurrentPillLongPressed() {
+    if pillLongPressed != nil {
+      pillLongPressed!.layer.removeAllAnimations()
+      pillLongPressed!.transform = .identity
+    }
+    pillLongPressed = nil
+  }
+  
+  // MARK: Screen gesture
+  
+  func screenTapped() {
+    stopCurrentPillLongPressed()
+  }
+  
 }
 
