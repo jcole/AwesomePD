@@ -27,24 +27,34 @@ class DefineCurveView: UIView, ChartViewDelegate {
   }
   
   func setup() {
-    // Chart
+    // Add chart
+    addSubview(chartView)
+
+    // Chart formatting
     chartView.delegate = self
     chartView.backgroundColor = UIColor.white
     chartView.highlightPerTapEnabled = true
     chartView.doubleTapToZoomEnabled = false
     chartView.maxHighlightDistance = 20.0
+    chartView.dragEnabled = false
+    chartView.xAxis.labelPosition = .bottom
+    chartView.xAxis.axisMinimum = chartMinTime
+    chartView.xAxis.axisMaximum = chartMaxTime
+    chartView.leftAxis.axisMinimum = chartYAxisMin
+    chartView.leftAxis.axisMaximum = chartYAxisMax
+    chartView.rightAxis.enabled = false
+
+    // Chart gestures
     chartView.addGestureRecognizer(UIPanGestureRecognizer(target: self, action: #selector(chartPanned(gesture:))))
     let doubleTap = UITapGestureRecognizer(target: self, action: #selector(chartDoubleTapped(gesture:)))
     doubleTap.numberOfTapsRequired = 2
     chartView.addGestureRecognizer(doubleTap)
-    chartView.dragEnabled = false
-    chartView.xAxis.labelPosition = .bottom
-    addSubview(chartView)
-    
+
     // Data set
     chartLine.lineWidth = 4.0
     chartLine.setDrawHighlightIndicators(false)
     
+    // Constraints
     chartView.snp.makeConstraints { (make) in
       make.edges.equalTo(self).inset(UIEdgeInsetsMake(20, 20, 20, 20))
     }
@@ -66,7 +76,7 @@ class DefineCurveView: UIView, ChartViewDelegate {
   func updateSelectedPoint(x: Double, y: Double) {
     if let point = selectedPoint {
       point.x = x
-      point.y = y
+      point.y = max(0,y)
       sortDataPoints()
       chartView.notifyDataSetChanged()
     }
@@ -83,7 +93,7 @@ class DefineCurveView: UIView, ChartViewDelegate {
   }
   
   func addNewPointFromTouch(x: Double, y: Double) {
-    let newEntry = ChartDataEntry(x: x, y: y)
+    let newEntry = ChartDataEntry(x: x, y: max(0,y))
     chartLine.values.append(newEntry)
     sortDataPoints()
     selectedPoint = newEntry

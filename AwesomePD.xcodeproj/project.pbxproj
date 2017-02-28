@@ -14,6 +14,7 @@
 		1F6353081E5E064D00BD1800 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 1F6353061E5E064D00BD1800 /* LaunchScreen.storyboard */; };
 		1F6B9DE81E64C7D500656B47 /* DefineCurveView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1F6B9DE71E64C7D500656B47 /* DefineCurveView.swift */; };
 		1F6B9DEB1E65D3B400656B47 /* TimelineView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1F6B9DEA1E65D3B400656B47 /* TimelineView.swift */; };
+		1F6B9DEE1E65DFBB00656B47 /* PillView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1F6B9DED1E65DFBB00656B47 /* PillView.swift */; };
 		1FC21C4C1E5F5626006FB8D4 /* Pill.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1FC21C4B1E5F5626006FB8D4 /* Pill.swift */; };
 		1FC21C501E5F5D8B006FB8D4 /* PillPickerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1FC21C4F1E5F5D8B006FB8D4 /* PillPickerView.swift */; };
 		A1FB528D078072CAE4448DD0 /* Pods_AwesomePD.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9A23FCF5DFB6112459A173A8 /* Pods_AwesomePD.framework */; };
@@ -29,6 +30,7 @@
 		1F6353091E5E064D00BD1800 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		1F6B9DE71E64C7D500656B47 /* DefineCurveView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DefineCurveView.swift; sourceTree = "<group>"; };
 		1F6B9DEA1E65D3B400656B47 /* TimelineView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TimelineView.swift; sourceTree = "<group>"; };
+		1F6B9DED1E65DFBB00656B47 /* PillView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PillView.swift; sourceTree = "<group>"; };
 		1FC21C4B1E5F5626006FB8D4 /* Pill.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Pill.swift; sourceTree = "<group>"; };
 		1FC21C4F1E5F5D8B006FB8D4 /* PillPickerView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PillPickerView.swift; sourceTree = "<group>"; };
 		9A23FCF5DFB6112459A173A8 /* Pods_AwesomePD.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_AwesomePD.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -69,13 +71,10 @@
 		1F6352FC1E5E064D00BD1800 /* AwesomePD */ = {
 			isa = PBXGroup;
 			children = (
+				1F6B9DEC1E65DF7700656B47 /* Models */,
 				1F6B9DE91E65D36100656B47 /* Views */,
-				1F6352FD1E5E064D00BD1800 /* AppDelegate.swift */,
-				1F6352FF1E5E064D00BD1800 /* ViewController.swift */,
-				1F6353011E5E064D00BD1800 /* Main.storyboard */,
-				1F6353041E5E064D00BD1800 /* Assets.xcassets */,
-				1F6353061E5E064D00BD1800 /* LaunchScreen.storyboard */,
-				1F6353091E5E064D00BD1800 /* Info.plist */,
+				1F6B9DEF1E65E0A900656B47 /* Controllers */,
+				1F6B9DF01E65E0C200656B47 /* Resources */,
 			);
 			path = AwesomePD;
 			sourceTree = "<group>";
@@ -85,10 +84,38 @@
 			children = (
 				1F6B9DE71E64C7D500656B47 /* DefineCurveView.swift */,
 				1FC21C4F1E5F5D8B006FB8D4 /* PillPickerView.swift */,
-				1FC21C4B1E5F5626006FB8D4 /* Pill.swift */,
+				1F6B9DED1E65DFBB00656B47 /* PillView.swift */,
 				1F6B9DEA1E65D3B400656B47 /* TimelineView.swift */,
 			);
 			name = Views;
+			sourceTree = "<group>";
+		};
+		1F6B9DEC1E65DF7700656B47 /* Models */ = {
+			isa = PBXGroup;
+			children = (
+				1FC21C4B1E5F5626006FB8D4 /* Pill.swift */,
+			);
+			name = Models;
+			sourceTree = "<group>";
+		};
+		1F6B9DEF1E65E0A900656B47 /* Controllers */ = {
+			isa = PBXGroup;
+			children = (
+				1F6352FF1E5E064D00BD1800 /* ViewController.swift */,
+			);
+			name = Controllers;
+			sourceTree = "<group>";
+		};
+		1F6B9DF01E65E0C200656B47 /* Resources */ = {
+			isa = PBXGroup;
+			children = (
+				1F6352FD1E5E064D00BD1800 /* AppDelegate.swift */,
+				1F6353011E5E064D00BD1800 /* Main.storyboard */,
+				1F6353041E5E064D00BD1800 /* Assets.xcassets */,
+				1F6353061E5E064D00BD1800 /* LaunchScreen.storyboard */,
+				1F6353091E5E064D00BD1800 /* Info.plist */,
+			);
+			name = Resources;
 			sourceTree = "<group>";
 		};
 		DC53523A9CC29F068019F211 /* Frameworks */ = {
@@ -236,6 +263,7 @@
 				1F6B9DEB1E65D3B400656B47 /* TimelineView.swift in Sources */,
 				1F6B9DE81E64C7D500656B47 /* DefineCurveView.swift in Sources */,
 				1F6353001E5E064D00BD1800 /* ViewController.swift in Sources */,
+				1F6B9DEE1E65DFBB00656B47 /* PillView.swift in Sources */,
 				1FC21C501E5F5D8B006FB8D4 /* PillPickerView.swift in Sources */,
 				1F6352FE1E5E064D00BD1800 /* AppDelegate.swift in Sources */,
 			);

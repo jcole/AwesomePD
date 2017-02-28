@@ -14,25 +14,29 @@ import SnapKit
 class TimelineView: UIView, PillPickerViewDelegate {
   
   // Constants
-  let minTime: Double = 0.0
-  let maxTime: Double = 24.0
   let timeStep: Double = 0.25
   
   // Views
   let chartView = LineChartView()
-  let pillPicker = PillPickerView()
-  var pills: [Pill] = []
-  var pillLongPressed: Pill?
+  let pillPickerView: PillPickerView!
+  var selectedPills: [PillView] = []
+  var pillLongPressed: PillView?
   
   // Calculated total data
   let totalSet = LineChartDataSet()
 
-  
   // MARK: Init
   
-  convenience init() {
-    self.init(frame: CGRect.zero)
+  init(availablePills: [Pill]) {
+    pillPickerView = PillPickerView(pills: availablePills)
+
+    super.init(frame: CGRect.zero)
+
     setup()
+  }
+  
+  required init?(coder aDecoder: NSCoder) {
+    fatalError("init(coder:) has not been implemented")
   }
   
   // MARK: Setup subviews
@@ -46,11 +50,11 @@ class TimelineView: UIView, PillPickerViewDelegate {
     addSubview(chartView)
     
     // Pillpicker
-    pillPicker.delegate = self
-    addSubview(pillPicker)
+    pillPickerView.delegate = self
+    addSubview(pillPickerView)
     
     // Constraints
-    pillPicker.snp.makeConstraints { (make) in
+    pillPickerView.snp.makeConstraints { (make) in
       make.top.equalTo(self).offset(30.0)
       make.right.equalTo(self).offset(-30.0)
       make.bottom.equalTo(self.chartView)
@@ -59,7 +63,7 @@ class TimelineView: UIView, PillPickerViewDelegate {
     
     chartView.snp.makeConstraints { (make) in
       make.left.top.equalTo(self).offset(30.0)
-      make.right.equalTo(self.pillPicker.snp.left).offset(-30.0)
+      make.right.equalTo(self.pillPickerView.snp.left).offset(-30.0)
       make.bottom.equalTo(self).offset(-80.0)
     }
   }
@@ -73,8 +77,8 @@ class TimelineView: UIView, PillPickerViewDelegate {
     
     // Left axis
     chartView.leftAxis.labelTextColor = UIColor.white
-    chartView.leftAxis.axisMinimum = 0.0
-    chartView.leftAxis.axisMaximum = 10.0
+    chartView.leftAxis.axisMinimum = chartYAxisMin
+    chartView.leftAxis.axisMaximum = chartYAxisMax
     chartView.leftAxis.drawGridLinesEnabled = false
     let lowLimitLine = ChartLimitLine(limit: 4.0, label: "Low")
     lowLimitLine.lineColor = UIColor.green
@@ -92,8 +96,8 @@ class TimelineView: UIView, PillPickerViewDelegate {
     // Horizontal axis
     chartView.xAxis.labelTextColor = UIColor.white
     chartView.xAxis.labelPosition = .bottom
-    chartView.xAxis.axisMinimum = minTime
-    chartView.xAxis.axisMaximum = maxTime
+    chartView.xAxis.axisMinimum = chartMinTime
+    chartView.xAxis.axisMaximum = chartMaxTime
     chartView.xAxis.drawGridLinesEnabled = true
     
     // Total data set
@@ -108,7 +112,7 @@ class TimelineView: UIView, PillPickerViewDelegate {
   // MARK: Data methods
   
   func numTimeSteps() -> Int {
-    return Int((maxTime - minTime) / timeStep)
+    return Int((chartMaxTime - chartMinTime) / timeStep)
   }
   
   func chartDataEntries(pairs:[[Double]]) -> [ChartDataEntry] {
@@ -134,7 +138,7 @@ class TimelineView: UIView, PillPickerViewDelegate {
   func timeForLocationX(x: CGFloat) -> Double {
     let minX = minLocationX()
     let maxX = maxLocationX()
-    var calcTime = minTime + (maxTime - minTime) * Double((x - minX) / (maxX - minX))
+    var calcTime = chartMinTime + (chartMaxTime - chartMinTime) * Double((x - minX) / (maxX - minX))
     
     // round to nearest step
     calcTime = calcTime - calcTime.truncatingRemainder(dividingBy: timeStep)
@@ -145,53 +149,53 @@ class TimelineView: UIView, PillPickerViewDelegate {
   func locationForTime(time: Double) -> CGFloat {
     let minX = minLocationX()
     let maxX = maxLocationX()
-    return CGFloat(time / (maxTime - minTime)) * (maxX - minX) + minX
+    return CGFloat(time / (chartMaxTime - chartMinTime)) * (maxX - minX) + minX
   }
   
   // MARK: PillPickerViewDelegate
   
-  func pillSelected(pill: Pill) {
-    let pillCopy = pill.clone()
-    addPill(pill: pillCopy)
+  func pillSelected(pillView: PillView) {
+    let pillCopy = pillView.clone()
+    addPill(pillView: pillCopy)
     stopCurrentPillLongPressed()
   }
   
   // MARK: Pills
   
-  func addPill(pill: Pill) {
-    pills.append(pill)
-    addSubview(pill)
+  func addPill(pillView: PillView) {
+    selectedPills.append(pillView)
+    addSubview(pillView)
     
     // Animate pill
-    pill.transform = CGAffineTransform(scaleX: 0.2, y: 0.2)
+    pillView.transform = CGAffineTransform(scaleX: 0.2, y: 0.2)
     UIView.animate(withDuration: 0.2,
                    delay: 0.0,
                    usingSpringWithDamping: 0.2,
                    initialSpringVelocity: 6.0,
                    options: .allowUserInteraction,
                    animations: {
-                    pill.transform = .identity
+                    pillView.transform = .identity
     },
                    completion: nil
     )
     
     // Add gestures
-    pill.isUserInteractionEnabled = true
-    pill.addGestureRecognizer(UIPanGestureRecognizer(target: self, action: #selector(pillPanned(recognizer:))))
+    pillView.isUserInteractionEnabled = true
+    pillView.addGestureRecognizer(UIPanGestureRecognizer(target: self, action: #selector(pillPanned(recognizer:))))
     let longPress = UILongPressGestureRecognizer(target: self, action: #selector(pillLongPressed(recognizer:)))
     longPress.minimumPressDuration = 0.75
-    pill.addGestureRecognizer(longPress)
-    pill.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(pillTapped(recognizer:))))
+    pillView.addGestureRecognizer(longPress)
+    pillView.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(pillTapped(recognizer:))))
     
-    pill.startTime = 12.0
-    adjustPillLocationBasedOnStartTime(pill: pill)
+    pillView.pill.startTime = 12.0
+    adjustPillLocationBasedOnStartTime(pillView: pillView)
     
     recalcData()
   }
   
-  func removePill(pill: Pill) {
-    if let index = pills.index(of: pill) {
-      pills.remove(at: index)
+  func removePill(pill: PillView) {
+    if let index = selectedPills.index(of: pill) {
+      selectedPills.remove(at: index)
       pill.removeFromSuperview()
       recalcData()
     }
@@ -201,10 +205,10 @@ class TimelineView: UIView, PillPickerViewDelegate {
     var sets:[LineChartDataSet] = []
     
     // Create sets for each pill
-    pills.forEach { (pill) in
+    selectedPills.forEach { (pillView) in
       let set = LineChartDataSet()
-      formatPillDataSet(set: set, pill: pill)
-      set.values = chartDataEntries(pairs: pill.adjustedTimeData())
+      formatPillDataSet(set: set, pillView: pillView)
+      set.values = chartDataEntries(pairs: pillView.pill.adjustedTimeData())
       sets.append(set)
     }
     
@@ -231,10 +235,10 @@ class TimelineView: UIView, PillPickerViewDelegate {
     chartView.notifyDataSetChanged()
   }
   
-  func formatPillDataSet(set: LineChartDataSet, pill: Pill) {
-    set.label = pill.name
-    set.setColor(pill.color)
-    set.fillColor = pill.color
+  func formatPillDataSet(set: LineChartDataSet, pillView: PillView) {
+    set.label = pillView.pill.name
+    set.setColor(pillView.color)
+    set.fillColor = pillView.color
     set.mode = .cubicBezier
     set.drawFilledEnabled = true
     set.drawCirclesEnabled = false
@@ -242,10 +246,10 @@ class TimelineView: UIView, PillPickerViewDelegate {
     set.fillAlpha = 0.3
   }
   
-  func adjustPillLocationBasedOnStartTime(pill: Pill) {
-    let locationX = locationForTime(time: pill.startTime)
+  func adjustPillLocationBasedOnStartTime(pillView: PillView) {
+    let locationX = locationForTime(time: pillView.pill.startTime)
     
-    pill.snp.remakeConstraints { (make) in
+    pillView.snp.remakeConstraints { (make) in
       make.width.equalTo(100.0)
       make.height.equalTo(40.0)
       make.top.equalTo(chartView.snp.bottom).offset(20.0)
@@ -256,7 +260,7 @@ class TimelineView: UIView, PillPickerViewDelegate {
   func pillPanned(recognizer: UIPanGestureRecognizer) {
     stopCurrentPillLongPressed()
     
-    if let pill = recognizer.view as? Pill {
+    if let pillView = recognizer.view as? PillView {
       // Check bounds of button location
       let locationX = recognizer.location(in: self).x
       var adjustedLocation:CGFloat = locationX
@@ -267,10 +271,10 @@ class TimelineView: UIView, PillPickerViewDelegate {
       let time = timeForLocationX(x: adjustedLocation)
       
       // Re-position pill
-      adjustPillLocationBasedOnStartTime(pill: pill)
+      adjustPillLocationBasedOnStartTime(pillView: pillView)
       
       // Adjust data
-      pill.startTime = time
+      pillView.pill.startTime = time
       recalcData()
     }
   }
@@ -278,25 +282,25 @@ class TimelineView: UIView, PillPickerViewDelegate {
   func pillLongPressed(recognizer: UIPanGestureRecognizer) {
     stopCurrentPillLongPressed()
     
-    if let pill = recognizer.view as? Pill {
-      pillLongPressed = pill
+    if let pillView = recognizer.view as? PillView {
+      pillLongPressed = pillView
       
       // Animate pill shimmy
-      pill.transform = CGAffineTransform(rotationAngle: CGFloat.pi * -3.0 / 180.0)
+      pillView.transform = CGAffineTransform(rotationAngle: CGFloat.pi * -3.0 / 180.0)
       UIView.animate(withDuration: 0.1,
                      delay: 0.0,
                      options: [.allowUserInteraction, .repeat, .autoreverse],
                      animations: {
-                      pill.transform = CGAffineTransform(rotationAngle: CGFloat.pi * 3.0 / 180.0)
+                      pillView.transform = CGAffineTransform(rotationAngle: CGFloat.pi * 3.0 / 180.0)
       }, completion: nil
       )
     }
   }
   
   func pillTapped(recognizer: UIPanGestureRecognizer) {
-    if let pill = recognizer.view as? Pill {
-      if pill == pillLongPressed {
-        removePill(pill: pill)
+    if let pillView = recognizer.view as? PillView {
+      if pillView == pillLongPressed {
+        removePill(pill: pillView)
       }
     }
     

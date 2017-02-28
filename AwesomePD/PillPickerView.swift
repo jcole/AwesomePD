@@ -11,72 +11,80 @@ import UIKit
 import SnapKit
 
 protocol PillPickerViewDelegate {
-  func pillSelected(pill: Pill)
+  func pillSelected(pillView: PillView)
 }
 
 class PillPickerView: UIView {
 
-  var pills:[Pill] = []
-  
+  // Data
+  var pillViews:[PillView] = []
   var delegate:PillPickerViewDelegate?
   
   // MARK: Init
   
-  convenience init() {
-    self.init(frame: CGRect.zero)
-    setup()
+  init(pills: [Pill]) {
+    super.init(frame: CGRect.zero)
+    
+    setup(pills: pills)
   }
   
-  func setup() {
-    backgroundColor = UIColor.clear
-    layer.borderColor = UIColor.black.cgColor
-    layer.borderWidth = 2.0
-
-    setupPills()
+  required init?(coder aDecoder: NSCoder) {
+    fatalError("init(coder:) has not been implemented")
   }
   
   // MARK: Setup pills
-  
-  func setupPills() {
-    pills = Pill.getAvailablePills()
-    var lastPill:Pill? = nil
+
+  func setup(pills: [Pill]) {
+    var lastPillView: PillView? = nil
+    let colors: [UIColor] = [.cyan, .red, .green, .purple]
+    var colorIndex = 0
     
     pills.forEach { (pill) in
-      pill.isUserInteractionEnabled = true
-      pill.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(pillTapped(sender:))))
-      addSubview(pill)
+      let pillView = PillView(pill: pill, color: colors[colorIndex])
+      colorIndex += 1
+      if colorIndex >= colors.count {
+        colorIndex = 1
+      }
       
-      pill.snp.makeConstraints({ (make) in
-        make.width.equalTo(pill.frame.width)
-        make.height.equalTo(pill.frame.height)
+      pillView.isUserInteractionEnabled = true
+      pillView.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(pillViewTapped(sender:))))
+      addSubview(pillView)
+      
+      pillView.snp.makeConstraints({ (make) in
+        make.width.equalTo(pillView.frame.width)
+        make.height.equalTo(pillView.frame.height)
         make.centerX.equalTo(self)
-        if let last = lastPill {
+        if let last = lastPillView {
           make.top.equalTo(last.snp.bottom).offset(20.0)
         } else {
           make.top.equalTo(self).offset(20.0)
         }
       })
       
-      lastPill = pill
+      lastPillView = pillView
     }
+    
+    backgroundColor = UIColor.clear
+    layer.borderColor = UIColor.black.cgColor
+    layer.borderWidth = 2.0
   }
   
   // MARK: Gestures
   
-  func pillTapped(sender: UITapGestureRecognizer) {
-    if let pill = sender.view as? Pill {
+  func pillViewTapped(sender: UITapGestureRecognizer) {
+    if let pillView = sender.view as? PillView {
       // Animate pill
-      pill.transform = CGAffineTransform(scaleX: 0.5, y: 0.5)
+      pillView.transform = CGAffineTransform(scaleX: 0.5, y: 0.5)
       UIView.animate(withDuration: 0.2,
                      delay: 0.0,
                      usingSpringWithDamping: 0.2,
                      initialSpringVelocity: 6.0,
                      options: .allowUserInteraction,
                      animations: {
-                      pill.transform = .identity
+                      pillView.transform = .identity
                       },
                      completion: { (finished) in
-        self.delegate?.pillSelected(pill: pill)
+        self.delegate?.pillSelected(pillView: pillView)
       })
     }
   }

@@ -9,47 +9,20 @@
 import Foundation
 import UIKit
 
-class Pill: UIView {
+class Pill {
   
   // Properties
   var name:String!
-  var color:UIColor!
   var profileData:[[Double]] = []
   var startTime:Double = 0.0
   
-  // Constants
-  let pillWidth:CGFloat = 100.0
-  let pillHeight:CGFloat = 40.0
-  
   // MARK: Init
   
-  init(name: String, color: UIColor, profileData:[[Double]]) {
+  init(name: String, profileData:[[Double]]) {
     self.name = name
-    self.color = color
     self.profileData = profileData
+  }
     
-    super.init(frame: CGRect(x: 0, y: 0, width: pillWidth, height: pillHeight))
-
-    setup()
-  }
-  
-  required init?(coder aDecoder: NSCoder) {
-    fatalError("init(coder:) has not been implemented")
-  }
-  
-  func setup() {
-    backgroundColor = color
-    layer.borderColor = UIColor.lightGray.cgColor
-    layer.borderWidth = 1.0
-    layer.cornerRadius = 20.0
-  }
-
-  // MARK: copy 
-  
-  func clone() -> Pill {
-    return Pill(name: self.name, color: self.color, profileData: self.profileData)
-  }
-  
   // MARK: Data methods
   
   func adjustedTimeData() -> [[Double]] {
@@ -62,24 +35,34 @@ class Pill: UIView {
     return adjusted
   }
   
-  // TODO: Replace this with actual profile data
-
-  static func getAvailablePills() -> [Pill] {
-    let pills = [
-      Pill(name: "blue pill", color: .cyan, profileData: Pill.randomData(magnitude: 8.0)),
-      Pill(name: "red pill", color: .red, profileData: Pill.randomData(magnitude: 4.0)),
-      Pill(name: "green pill", color: .green, profileData: Pill.randomData(magnitude: 2.0)),
-      Pill(name: "purple pill", color: .purple, profileData: Pill.randomData(magnitude: 1.0)),
-      ]
+  // MARK: Model data
+  
+  static func initData() -> [[Double]] {
+    let data: [[Double]] = [
+      [0.0, 0.0],
+      [0.61218177028937, 1.94435243458099],
+      [1.17893019265716, 3.28324122661739],
+      [2.22426617169107, 3.91549426730124],
+      [3.54667915721591, 4.01963006223741],
+      [4.80612009581098, 3.48407454542285],
+      [5.58697347773993, 2.8741363179396],
+      [6.70787591308956, 1.83277836857795],
+      [7.65245661703586, 0.984815466954901],
+      [9.40307952168303, 0.590587100410849],
+      [11.7456396674699, 0.374877239471651],
+      [14.4282488666774, 0.114537752131239],
+      [15.1461302016766, 0.0178402282619441],
+      [16.2670326370262, 0.0]
+    ]
     
-    return pills
+    return data
   }
   
   static func randomData(magnitude:Double) -> [[Double]] {
     var data:[[Double]] = []
     
-    let numTimeSteps = 24 * 4
     let timeStep:Double = 0.25
+    let numTimeSteps:Int = Int(chartMaxTime / timeStep)
     let fudgeX:Double = 0.5
     var hitZero:Bool = false
     
