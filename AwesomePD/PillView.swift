@@ -41,10 +41,10 @@ class PillView: UIView {
     layer.cornerRadius = 20.0
   }
   
-  // MARK: copy
+  // MARK: Clone
   
   func clone() -> PillView {
-    return PillView(pill: pill, color: color)
+    return PillView(pill: pill.clone(), color: color)
   }
   
 }

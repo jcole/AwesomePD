@@ -58,8 +58,8 @@ class ViewController: UIViewController {
   func initData() {
     pills = [
       Pill(name: "Levodopa", profileData: Pill.initData()),
-      Pill(name: "Sinemet", profileData: Pill.randomData(magnitude: 4.0)),
-      Pill(name: "Wacky pill", profileData: Pill.randomData(magnitude: 2.0))
+      Pill(name: "Sinemet", profileData: Pill.initData()),
+      Pill(name: "Wacky pill", profileData: Pill.initData())
     ]
   }
   
