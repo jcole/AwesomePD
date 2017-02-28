@@ -17,18 +17,18 @@ struct DoublePoint {
   }
 }
 
-func convertToCGPoints(points: [[Double]]) -> [CGPoint] {
+func convertToCGPoints(points: [DoublePoint]) -> [CGPoint] {
   var converted: [CGPoint] = []
-  for pair in points {
-    converted.append(CGPoint(x: pair[0], y: pair[1]))
+  for point in points {
+    converted.append(point.toCGPoint())
   }
   return converted
 }
 
-func convertToDoubles(points: [CGPoint]) -> [[Double]] {
-  var converted: [[Double]] = []
+func convertToDoublePoints(points: [CGPoint]) -> [DoublePoint] {
+  var converted: [DoublePoint] = []
   for point in points {
-    converted.append([Double(point.x), Double(point.y)])
+    converted.append(DoublePoint(x: Double(point.x), y: Double(point.y)))
   }
   return converted
 }

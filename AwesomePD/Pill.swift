@@ -14,12 +14,12 @@ class Pill {
   // Properties
   var name:String!
   var startTime:Double = 0.0
-  var profileData:[[Double]] = []
-  var interpolatedData:[[Double]] = []
+  var profileData:[DoublePoint] = []
+  var interpolatedData:[DoublePoint] = []
 
   // MARK: Init
   
-  init(name: String, profileData:[[Double]]) {
+  init(name: String, profileData:[DoublePoint]) {
     self.name = name
     self.profileData = profileData
     self.interpolatedData = interpolatedData(data: profileData)
@@ -33,55 +33,27 @@ class Pill {
   
   // MARK: Data methods
   
-  func adjustedTimeData() -> [[Double]] {
-    var adjusted:[[Double]] = []
+  func adjustedTimeData() -> [DoublePoint] {
+    var adjusted:[DoublePoint] = []
     
-    interpolatedData.forEach { (pair) in
-      adjusted.append([pair[0] + startTime, pair[1]])
+    interpolatedData.forEach { (point) in
+      adjusted.append(DoublePoint(x: point.x + startTime, y: point.y))
     }
     
     return adjusted
   }
   
-  func interpolatedData(data: [[Double]]) -> [[Double]] {
-    // Linear interpolation
-//    let startTime: Double = 0.0
-//    let endTime: Double = 24.0
-//    let timeStep: Double = 0.25
-//    var adjustedData: [[Double]] = []
-//    for xValue in stride(from: startTime, to: endTime, by: timeStep) {
-//      let yValue = interpolate(data: data, x: xValue)
-//      adjustedData.append([xValue, yValue])
-//    }
-  
-    // Convert from Double to CGPoints
+  func interpolatedData(data: [DoublePoint]) -> [DoublePoint] {
     let cgPoints: [CGPoint] = convertToCGPoints(points: data)
     let adjustedData = SmoothLinePoints.smoothPointsThrough(points: cgPoints)
-    let convertedData: [[Double]] = convertToDoubles(points: adjustedData)
+    let convertedData: [DoublePoint] = convertToDoublePoints(points: adjustedData)
     
     return convertedData
   }
   
-  // TODO: currently linear interpolation
-  func interpolate(data: [[Double]], x: Double) -> Double {
-    var lastX: Double = 0.0
-    var lastY: Double = 0.0
-    for point in data {
-      let dataX = point[0]
-      let dataY = point[1]
-      if ((x > lastX) && (x < dataX)) {
-        let y: Double = lastY + (dataY - lastY) * (x - lastX) / (dataX - lastX)
-        return y
-      }
-      lastX = dataX
-      lastY = dataY
-    }
-    return 0.0
-  }
-  
   // MARK: Model data
   
-  static func initData() -> [[Double]] {
+  static func initData() -> [DoublePoint] {
     let data: [[Double]] = [
       [0.0, 0.0],
       [0.61218177028937, 1.94435243458099],
@@ -98,8 +70,11 @@ class Pill {
       [15.1461302016766, 0.0178402282619441],
       [16.2670326370262, 0.0]
     ]
-    
-    return data
+    var points: [DoublePoint] = []
+    data.forEach { (pair) in
+      points.append(DoublePoint(x: pair[0], y: pair[1]))
+    }
+    return points
   }
   
 }

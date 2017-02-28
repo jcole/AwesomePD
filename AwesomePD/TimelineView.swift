@@ -111,11 +111,11 @@ class TimelineView: UIView, PillPickerViewDelegate {
   
   // MARK: Data methods
     
-  func chartDataEntries(pairs:[[Double]]) -> [ChartDataEntry] {
+  func chartDataEntries(points:[DoublePoint]) -> [ChartDataEntry] {
     var entries:[ChartDataEntry] = []
     
-    pairs.forEach { (pair) in
-      entries.append(ChartDataEntry(x: pair[0], y: pair[1]))
+    points.forEach { (point) in
+      entries.append(ChartDataEntry(x: point.x, y: point.y))
     }
     
     return entries
@@ -204,12 +204,12 @@ class TimelineView: UIView, PillPickerViewDelegate {
     selectedPills.forEach { (pillView) in
       let set = LineChartDataSet()
       formatPillDataSet(set: set, pillView: pillView)
-      set.values = chartDataEntries(pairs: pillView.pill.adjustedTimeData())
+      set.values = chartDataEntries(points: pillView.pill.adjustedTimeData())
       sets.append(set)
     }
     
     // Calculate totals
-    var totalData:[[Double]] = []
+    var totalData:[DoublePoint] = []
     for xValue in stride(from: chartMinTime, to: chartMaxTime, by: timeStep) {
       var totalVal:Double = 0
       sets.forEach({ (set) in
@@ -220,9 +220,9 @@ class TimelineView: UIView, PillPickerViewDelegate {
         }
       })
       
-      totalData.append([Double(xValue), totalVal])
+      totalData.append(DoublePoint(x: xValue, y: totalVal))
     }
-    totalSet.values = chartDataEntries(pairs: totalData)
+    totalSet.values = chartDataEntries(points: totalData)
     sets.append(totalSet)
     
     // Refresh chart with new sets
