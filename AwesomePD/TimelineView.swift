@@ -110,11 +110,7 @@ class TimelineView: UIView, PillPickerViewDelegate {
   }
   
   // MARK: Data methods
-  
-  func numTimeSteps() -> Int {
-    return Int((chartMaxTime - chartMinTime) / timeStep)
-  }
-  
+    
   func chartDataEntries(pairs:[[Double]]) -> [ChartDataEntry] {
     var entries:[ChartDataEntry] = []
     
@@ -214,8 +210,7 @@ class TimelineView: UIView, PillPickerViewDelegate {
     
     // Calculate totals
     var totalData:[[Double]] = []
-    (0...numTimeSteps()).forEach { (step) in
-      let xValue:Double = Double(step) * timeStep
+    for xValue in stride(from: chartMinTime, to: chartMaxTime, by: timeStep) {
       var totalVal:Double = 0
       sets.forEach({ (set) in
         if Double(xValue) >= set.xMin {
