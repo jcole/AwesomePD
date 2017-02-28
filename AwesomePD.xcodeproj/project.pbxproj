@@ -12,8 +12,10 @@
 		1F6353031E5E064D00BD1800 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 1F6353011E5E064D00BD1800 /* Main.storyboard */; };
 		1F6353051E5E064D00BD1800 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 1F6353041E5E064D00BD1800 /* Assets.xcassets */; };
 		1F6353081E5E064D00BD1800 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 1F6353061E5E064D00BD1800 /* LaunchScreen.storyboard */; };
+		1F6B9DE81E64C7D500656B47 /* DefineCurveView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1F6B9DE71E64C7D500656B47 /* DefineCurveView.swift */; };
+		1F6B9DEB1E65D3B400656B47 /* TimelineView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1F6B9DEA1E65D3B400656B47 /* TimelineView.swift */; };
 		1FC21C4C1E5F5626006FB8D4 /* Pill.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1FC21C4B1E5F5626006FB8D4 /* Pill.swift */; };
-		1FC21C501E5F5D8B006FB8D4 /* PillPicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1FC21C4F1E5F5D8B006FB8D4 /* PillPicker.swift */; };
+		1FC21C501E5F5D8B006FB8D4 /* PillPickerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1FC21C4F1E5F5D8B006FB8D4 /* PillPickerView.swift */; };
 		A1FB528D078072CAE4448DD0 /* Pods_AwesomePD.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9A23FCF5DFB6112459A173A8 /* Pods_AwesomePD.framework */; };
 /* End PBXBuildFile section */
 
@@ -25,8 +27,10 @@
 		1F6353041E5E064D00BD1800 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		1F6353071E5E064D00BD1800 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		1F6353091E5E064D00BD1800 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		1F6B9DE71E64C7D500656B47 /* DefineCurveView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DefineCurveView.swift; sourceTree = "<group>"; };
+		1F6B9DEA1E65D3B400656B47 /* TimelineView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TimelineView.swift; sourceTree = "<group>"; };
 		1FC21C4B1E5F5626006FB8D4 /* Pill.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Pill.swift; sourceTree = "<group>"; };
-		1FC21C4F1E5F5D8B006FB8D4 /* PillPicker.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PillPicker.swift; sourceTree = "<group>"; };
+		1FC21C4F1E5F5D8B006FB8D4 /* PillPickerView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PillPickerView.swift; sourceTree = "<group>"; };
 		9A23FCF5DFB6112459A173A8 /* Pods_AwesomePD.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_AwesomePD.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		A87589D1153773694447DBD5 /* Pods-AwesomePD.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-AwesomePD.release.xcconfig"; path = "Pods/Target Support Files/Pods-AwesomePD/Pods-AwesomePD.release.xcconfig"; sourceTree = "<group>"; };
 		EDD82D494ABDEF462C7A8220 /* Pods-AwesomePD.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-AwesomePD.debug.xcconfig"; path = "Pods/Target Support Files/Pods-AwesomePD/Pods-AwesomePD.debug.xcconfig"; sourceTree = "<group>"; };
@@ -65,16 +69,26 @@
 		1F6352FC1E5E064D00BD1800 /* AwesomePD */ = {
 			isa = PBXGroup;
 			children = (
+				1F6B9DE91E65D36100656B47 /* Views */,
 				1F6352FD1E5E064D00BD1800 /* AppDelegate.swift */,
 				1F6352FF1E5E064D00BD1800 /* ViewController.swift */,
-				1FC21C4F1E5F5D8B006FB8D4 /* PillPicker.swift */,
-				1FC21C4B1E5F5626006FB8D4 /* Pill.swift */,
 				1F6353011E5E064D00BD1800 /* Main.storyboard */,
 				1F6353041E5E064D00BD1800 /* Assets.xcassets */,
 				1F6353061E5E064D00BD1800 /* LaunchScreen.storyboard */,
 				1F6353091E5E064D00BD1800 /* Info.plist */,
 			);
 			path = AwesomePD;
+			sourceTree = "<group>";
+		};
+		1F6B9DE91E65D36100656B47 /* Views */ = {
+			isa = PBXGroup;
+			children = (
+				1F6B9DE71E64C7D500656B47 /* DefineCurveView.swift */,
+				1FC21C4F1E5F5D8B006FB8D4 /* PillPickerView.swift */,
+				1FC21C4B1E5F5626006FB8D4 /* Pill.swift */,
+				1F6B9DEA1E65D3B400656B47 /* TimelineView.swift */,
+			);
+			name = Views;
 			sourceTree = "<group>";
 		};
 		DC53523A9CC29F068019F211 /* Frameworks */ = {
@@ -219,8 +233,10 @@
 			buildActionMask = 2147483647;
 			files = (
 				1FC21C4C1E5F5626006FB8D4 /* Pill.swift in Sources */,
+				1F6B9DEB1E65D3B400656B47 /* TimelineView.swift in Sources */,
+				1F6B9DE81E64C7D500656B47 /* DefineCurveView.swift in Sources */,
 				1F6353001E5E064D00BD1800 /* ViewController.swift in Sources */,
-				1FC21C501E5F5D8B006FB8D4 /* PillPicker.swift in Sources */,
+				1FC21C501E5F5D8B006FB8D4 /* PillPickerView.swift in Sources */,
 				1F6352FE1E5E064D00BD1800 /* AppDelegate.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

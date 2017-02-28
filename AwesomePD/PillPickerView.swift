@@ -1,5 +1,5 @@
 //
-//  PillPicker.swift
+//  PillPickerView.swift
 //  AwesomePD
 //
 //  Created by Jeff on 2/23/17.
@@ -10,15 +10,15 @@ import Foundation
 import UIKit
 import SnapKit
 
-protocol PillPickerDelegate {
+protocol PillPickerViewDelegate {
   func pillSelected(pill: Pill)
 }
 
-class PillPicker: UIView {
+class PillPickerView: UIView {
 
   var pills:[Pill] = []
   
-  var delegate:PillPickerDelegate?
+  var delegate:PillPickerViewDelegate?
   
   // MARK: Init
   
