@@ -17,6 +17,9 @@
 		1F6B9DEE1E65DFBB00656B47 /* PillView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1F6B9DED1E65DFBB00656B47 /* PillView.swift */; };
 		1FC21C4C1E5F5626006FB8D4 /* Pill.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1FC21C4B1E5F5626006FB8D4 /* Pill.swift */; };
 		1FC21C501E5F5D8B006FB8D4 /* PillPickerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1FC21C4F1E5F5D8B006FB8D4 /* PillPickerView.swift */; };
+		1FE06B151E660C1900B9C068 /* CubicCurveAlgorithm.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1FE06B141E660C1900B9C068 /* CubicCurveAlgorithm.swift */; };
+		1FE06B181E660D9C00B9C068 /* SmoothLinePoints.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1FE06B171E660D9C00B9C068 /* SmoothLinePoints.swift */; };
+		1FE06B1A1E661B5200B9C068 /* DataConversion.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1FE06B191E661B5200B9C068 /* DataConversion.swift */; };
 		A1FB528D078072CAE4448DD0 /* Pods_AwesomePD.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9A23FCF5DFB6112459A173A8 /* Pods_AwesomePD.framework */; };
 /* End PBXBuildFile section */
 
@@ -33,6 +36,9 @@
 		1F6B9DED1E65DFBB00656B47 /* PillView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PillView.swift; sourceTree = "<group>"; };
 		1FC21C4B1E5F5626006FB8D4 /* Pill.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Pill.swift; sourceTree = "<group>"; };
 		1FC21C4F1E5F5D8B006FB8D4 /* PillPickerView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PillPickerView.swift; sourceTree = "<group>"; };
+		1FE06B141E660C1900B9C068 /* CubicCurveAlgorithm.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CubicCurveAlgorithm.swift; sourceTree = "<group>"; };
+		1FE06B171E660D9C00B9C068 /* SmoothLinePoints.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SmoothLinePoints.swift; sourceTree = "<group>"; };
+		1FE06B191E661B5200B9C068 /* DataConversion.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DataConversion.swift; sourceTree = "<group>"; };
 		9A23FCF5DFB6112459A173A8 /* Pods_AwesomePD.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_AwesomePD.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		A87589D1153773694447DBD5 /* Pods-AwesomePD.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-AwesomePD.release.xcconfig"; path = "Pods/Target Support Files/Pods-AwesomePD/Pods-AwesomePD.release.xcconfig"; sourceTree = "<group>"; };
 		EDD82D494ABDEF462C7A8220 /* Pods-AwesomePD.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-AwesomePD.debug.xcconfig"; path = "Pods/Target Support Files/Pods-AwesomePD/Pods-AwesomePD.debug.xcconfig"; sourceTree = "<group>"; };
@@ -74,6 +80,8 @@
 				1F6B9DEC1E65DF7700656B47 /* Models */,
 				1F6B9DE91E65D36100656B47 /* Views */,
 				1F6B9DEF1E65E0A900656B47 /* Controllers */,
+				1FE06B161E660D8900B9C068 /* Lib */,
+				1FE06B131E660C0700B9C068 /* Vendor */,
 				1F6B9DF01E65E0C200656B47 /* Resources */,
 			);
 			path = AwesomePD;
@@ -116,6 +124,23 @@
 				1F6353091E5E064D00BD1800 /* Info.plist */,
 			);
 			name = Resources;
+			sourceTree = "<group>";
+		};
+		1FE06B131E660C0700B9C068 /* Vendor */ = {
+			isa = PBXGroup;
+			children = (
+				1FE06B141E660C1900B9C068 /* CubicCurveAlgorithm.swift */,
+			);
+			name = Vendor;
+			sourceTree = "<group>";
+		};
+		1FE06B161E660D8900B9C068 /* Lib */ = {
+			isa = PBXGroup;
+			children = (
+				1FE06B171E660D9C00B9C068 /* SmoothLinePoints.swift */,
+				1FE06B191E661B5200B9C068 /* DataConversion.swift */,
+			);
+			name = Lib;
 			sourceTree = "<group>";
 		};
 		DC53523A9CC29F068019F211 /* Frameworks */ = {
@@ -265,6 +290,9 @@
 				1F6353001E5E064D00BD1800 /* ViewController.swift in Sources */,
 				1F6B9DEE1E65DFBB00656B47 /* PillView.swift in Sources */,
 				1FC21C501E5F5D8B006FB8D4 /* PillPickerView.swift in Sources */,
+				1FE06B181E660D9C00B9C068 /* SmoothLinePoints.swift in Sources */,
+				1FE06B1A1E661B5200B9C068 /* DataConversion.swift in Sources */,
+				1FE06B151E660C1900B9C068 /* CubicCurveAlgorithm.swift in Sources */,
 				1F6352FE1E5E064D00BD1800 /* AppDelegate.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

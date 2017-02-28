@@ -44,18 +44,22 @@ class Pill {
   }
   
   func interpolatedData(data: [[Double]]) -> [[Double]] {
-    let startTime: Double = 0.0
-    let endTime: Double = 24.0
-    let timeStep: Double = 0.25
+    // Linear interpolation
+//    let startTime: Double = 0.0
+//    let endTime: Double = 24.0
+//    let timeStep: Double = 0.25
+//    var adjustedData: [[Double]] = []
+//    for xValue in stride(from: startTime, to: endTime, by: timeStep) {
+//      let yValue = interpolate(data: data, x: xValue)
+//      adjustedData.append([xValue, yValue])
+//    }
+  
+    // Convert from Double to CGPoints
+    let cgPoints: [CGPoint] = convertToCGPoints(points: data)
+    let adjustedData = SmoothLinePoints.smoothPointsThrough(points: cgPoints)
+    let convertedData: [[Double]] = convertToDoubles(points: adjustedData)
     
-    var adjustedData: [[Double]] = []
-    
-    for xValue in stride(from: startTime, to: endTime, by: timeStep) {
-      let yValue = interpolate(data: data, x: xValue)
-      adjustedData.append([xValue, yValue])
-    }
-    
-    return adjustedData
+    return convertedData
   }
   
   // TODO: currently linear interpolation
