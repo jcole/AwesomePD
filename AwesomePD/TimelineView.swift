@@ -26,9 +26,12 @@ class TimelineView: UIView, PillPickerViewDelegate {
   var selectedPillViews: [PillView] = []
   var pillLongPressed: PillView?
   
-  // Calculated total data
+  // Chart objects
   let totalSet = LineChartDataSet()
-
+  var lowLimitLine: ChartLimitLine!
+  var highLimitLine: ChartLimitLine!
+  var selectedLimitLine: ChartLimitLine?
+  
   // Data
   var delegate: TimelineViewProtocol?
   
@@ -56,6 +59,12 @@ class TimelineView: UIView, PillPickerViewDelegate {
     formatChart()
     addSubview(chartView)
     
+    // Chart gestures
+    chartView.addGestureRecognizer(UIPanGestureRecognizer(target: self, action: #selector(chartPanned(gesture:))))
+    let doubleTap = UITapGestureRecognizer(target: self, action: #selector(chartTapped(gesture:)))
+    doubleTap.numberOfTapsRequired = 1
+    chartView.addGestureRecognizer(doubleTap)
+    
     // Pillpicker
     pillPickerView.delegate = self
     addSubview(pillPickerView)
@@ -77,6 +86,7 @@ class TimelineView: UIView, PillPickerViewDelegate {
   
   func formatChart() {
     // General chart properties
+    chartView.doubleTapToZoomEnabled = false
     chartView.backgroundColor = UIColor.black
     chartView.chartDescription = nil
     chartView.drawGridBackgroundEnabled = false
@@ -87,15 +97,16 @@ class TimelineView: UIView, PillPickerViewDelegate {
     chartView.leftAxis.axisMinimum = chartYAxisMin
     chartView.leftAxis.axisMaximum = chartYAxisMax
     chartView.leftAxis.drawGridLinesEnabled = false
-    let lowLimitLine = ChartLimitLine(limit: 4.0, label: "Low")
+    
+    lowLimitLine = ChartLimitLine(limit: 4.0, label: "Low")
     lowLimitLine.lineColor = UIColor.green
     lowLimitLine.valueTextColor = UIColor.white
     chartView.leftAxis.addLimitLine(lowLimitLine)
     
-    let hightLimitLine = ChartLimitLine(limit: 6.0, label: "High")
-    hightLimitLine.lineColor = UIColor.green
-    hightLimitLine.valueTextColor = UIColor.white
-    chartView.leftAxis.addLimitLine(hightLimitLine)
+    highLimitLine = ChartLimitLine(limit: 6.0, label: "High")
+    highLimitLine.lineColor = UIColor.green
+    highLimitLine.valueTextColor = UIColor.white
+    chartView.leftAxis.addLimitLine(highLimitLine)
     
     // Right axis
     chartView.rightAxis.enabled = false
@@ -114,6 +125,7 @@ class TimelineView: UIView, PillPickerViewDelegate {
     totalSet.drawFilledEnabled = false
     totalSet.drawCirclesEnabled = false
     totalSet.drawValuesEnabled = false
+    totalSet.setDrawHighlightIndicators(false)
   }
   
   // MARK: Pill movement
@@ -238,6 +250,7 @@ class TimelineView: UIView, PillPickerViewDelegate {
     set.drawCirclesEnabled = false
     set.drawValuesEnabled = false
     set.fillAlpha = 0.3
+    set.setDrawHighlightIndicators(false)
   }
   
   func adjustPillLocationBasedOnStartTime(pillView: PillView) {
@@ -315,6 +328,43 @@ class TimelineView: UIView, PillPickerViewDelegate {
   
   func screenTapped() {
     stopCurrentPillLongPressed()
+  }
+  
+  // MARK: Chart gesture
+  
+  func chartTapped(gesture: UIPanGestureRecognizer) {
+    stopCurrentPillLongPressed()
+  }
+  
+  func chartPanned(gesture: UIPanGestureRecognizer) {
+    if gesture.state == .ended {
+      selectedLimitLine = nil
+    } else {
+      let touchPoint: CGPoint = gesture.location(in: self.chartView)
+      let dataPoint = self.chartView.valueForTouchPoint(point: touchPoint, axis: YAxis.AxisDependency.left)
+      
+      if gesture.state == .began {
+        selectedLimitLine = getLimitLineForDataPoint(point: dataPoint)
+      } else if gesture.state == .changed {
+        if let limitLine = selectedLimitLine {
+          limitLine.limit = Double(dataPoint.y)
+          chartView.notifyDataSetChanged()
+        }
+      }
+    }
+  }
+  
+  // MARK: Moving limit lines
+  
+  func getLimitLineForDataPoint(point: CGPoint) -> ChartLimitLine? {
+    let margin: CGFloat = 0.5
+    if abs(point.y - CGFloat(lowLimitLine.limit)) < margin {
+      return lowLimitLine
+    } else if  abs(point.y - CGFloat(highLimitLine.limit)) < margin {
+      return highLimitLine
+    } else {
+      return nil
+    }
   }
   
   // MARK: Refresh pill data
