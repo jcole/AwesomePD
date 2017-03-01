@@ -201,11 +201,23 @@ class TimelineView: UIView, PillPickerViewDelegate {
     
     // Add gestures
     pillView.isUserInteractionEnabled = true
+    // pan
     pillView.addGestureRecognizer(UIPanGestureRecognizer(target: self, action: #selector(pillPanned(recognizer:))))
+    // long press
     let longPress = UILongPressGestureRecognizer(target: self, action: #selector(pillLongPressed(recognizer:)))
     longPress.minimumPressDuration = 0.75
     pillView.addGestureRecognizer(longPress)
-    pillView.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(pillTapped(recognizer:))))
+    // double tap
+    let doubleTap = UITapGestureRecognizer(target: self, action: #selector(pillDoubleTapped(recognizer:)))
+    doubleTap.numberOfTapsRequired = 2
+    pillView.addGestureRecognizer(doubleTap)
+    // single tap
+    let singleTap = UITapGestureRecognizer(target: self, action: #selector(pillTapped(recognizer:)))
+    singleTap.numberOfTapsRequired = 1
+    singleTap.require(toFail: doubleTap)
+    //todo
+    pillView.addGestureRecognizer(singleTap)
+    
     
     pillView.pill.startTime = 12.0
     adjustPillLocationBasedOnStartTime(pillView: pillView)
@@ -346,6 +358,14 @@ class TimelineView: UIView, PillPickerViewDelegate {
       if pillView == pillLongPressed {
         removePill(pill: pillView)
       }
+    }
+    
+    pillLongPressed = nil
+  }
+  
+  func pillDoubleTapped(recognizer: UIPanGestureRecognizer) {
+    if let pillView = recognizer.view as? PillView {
+      delegate?.pillShouldEdit(pillView: pillView)
     }
     
     pillLongPressed = nil
