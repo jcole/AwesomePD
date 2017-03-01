@@ -15,7 +15,7 @@ let chartYAxisMax: Double = 10.0
 let chartMinTime: Double = 0.0
 let chartMaxTime: Double = 24.0
 
-class ViewController: UIViewController {
+class ViewController: UIViewController, TimelineViewProtocol, DefineCurveViewDelegate {
   
   // Subviews
   let defineCurveView = DefineCurveView()
@@ -39,18 +39,30 @@ class ViewController: UIViewController {
   func setup() {
     // TimelineView
     timelineView = TimelineView(availablePills: pills)
-    timelineView.isHidden = false
+    timelineView.delegate = self
     view.addSubview(timelineView)
     timelineView.snp.makeConstraints { (make) in
       make.edges.equalTo(self.view)
     }
     
     // DefineCurveView
-    defineCurveView.isHidden = true
+    defineCurveView.delegate = self
     view.addSubview(defineCurveView)
     defineCurveView.snp.makeConstraints { (make) in
       make.edges.equalTo(self.view)
     }
+    
+    hideDefineCurve()
+  }
+  
+  func hideDefineCurve() {
+    timelineView.isHidden = false
+    defineCurveView.isHidden = true
+  }
+  
+  func showDefineCurve() {
+    defineCurveView.isHidden = false
+    timelineView.isHidden = true
   }
   
   // MARK: Setup pill data
@@ -61,6 +73,24 @@ class ViewController: UIViewController {
       Pill(name: "Sinemet", profileData: Pill.initData()),
       Pill(name: "Wacky pill", profileData: Pill.initData())
     ]
+  }
+  
+  // MARK: TimelineViewProtocol
+  
+  func pillShouldEdit(pillView: PillView) {
+    defineCurveView.showPill(pillView: pillView)
+    showDefineCurve()
+  }
+  
+  // MARK: DefineCurveViewDelegate
+  
+  func pillCurveCancelled() {
+    hideDefineCurve()
+  }
+  
+  func pillCurveUpdated(pill: Pill, profileData: [DoublePoint]) {
+    timelineView.refreshPillData(pill: pill, profileData: profileData)
+    hideDefineCurve()
   }
   
 }

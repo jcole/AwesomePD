@@ -11,6 +11,10 @@ import UIKit
 import Charts
 import SnapKit
 
+protocol TimelineViewProtocol {
+  func pillShouldEdit(pillView: PillView)
+}
+
 class TimelineView: UIView, PillPickerViewDelegate {
   
   // Constants
@@ -19,12 +23,15 @@ class TimelineView: UIView, PillPickerViewDelegate {
   // Views
   let chartView = LineChartView()
   let pillPickerView: PillPickerView!
-  var selectedPills: [PillView] = []
+  var selectedPillViews: [PillView] = []
   var pillLongPressed: PillView?
   
   // Calculated total data
   let totalSet = LineChartDataSet()
 
+  // Data
+  var delegate: TimelineViewProtocol?
+  
   // MARK: Init
   
   init(availablePills: [Pill]) {
@@ -109,18 +116,6 @@ class TimelineView: UIView, PillPickerViewDelegate {
     totalSet.drawValuesEnabled = false
   }
   
-  // MARK: Data methods
-    
-  func chartDataEntries(points:[DoublePoint]) -> [ChartDataEntry] {
-    var entries:[ChartDataEntry] = []
-    
-    points.forEach { (point) in
-      entries.append(ChartDataEntry(x: point.x, y: point.y))
-    }
-    
-    return entries
-  }
-  
   // MARK: Pill movement
   
   func minLocationX() -> CGFloat {
@@ -156,10 +151,14 @@ class TimelineView: UIView, PillPickerViewDelegate {
     stopCurrentPillLongPressed()
   }
   
+  func pillShouldEdit(pillView: PillView) {
+    delegate?.pillShouldEdit(pillView: pillView)
+  }
+  
   // MARK: Pills
   
   func addPill(pillView: PillView) {
-    selectedPills.append(pillView)
+    selectedPillViews.append(pillView)
     addSubview(pillView)
     
     // Animate pill
@@ -190,8 +189,8 @@ class TimelineView: UIView, PillPickerViewDelegate {
   }
   
   func removePill(pill: PillView) {
-    if let index = selectedPills.index(of: pill) {
-      selectedPills.remove(at: index)
+    if let index = selectedPillViews.index(of: pill) {
+      selectedPillViews.remove(at: index)
       pill.removeFromSuperview()
       recalcData()
     }
@@ -201,7 +200,7 @@ class TimelineView: UIView, PillPickerViewDelegate {
     var sets:[LineChartDataSet] = []
     
     // Create sets for each pill
-    selectedPills.forEach { (pillView) in
+    selectedPillViews.forEach { (pillView) in
       let set = LineChartDataSet()
       formatPillDataSet(set: set, pillView: pillView)
       set.values = chartDataEntries(points: pillView.pill.adjustedTimeData())
@@ -314,6 +313,20 @@ class TimelineView: UIView, PillPickerViewDelegate {
   
   func screenTapped() {
     stopCurrentPillLongPressed()
+  }
+  
+  // MARK: Refresh pill data
+  
+  func refreshPillData(pill: Pill, profileData: [DoublePoint]) {
+    let pillViewsToCheck: [PillView] = selectedPillViews + pillPickerView.pillViews
+
+    pillViewsToCheck.forEach { (pillView) in
+      if pillView.pill.name == pill.name {
+        pillView.pill.updateProfileData(data: profileData)
+      }
+    }
+    
+    recalcData()
   }
   
 }

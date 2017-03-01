@@ -21,8 +21,7 @@ class Pill {
   
   init(name: String, profileData:[DoublePoint]) {
     self.name = name
-    self.profileData = profileData
-    self.interpolatedData = interpolatedData(data: profileData)
+    updateProfileData(data: profileData)
   }
   
   // MARK: Clone
@@ -52,6 +51,11 @@ class Pill {
   }
   
   // MARK: Model data
+  
+  func updateProfileData(data: [DoublePoint]) {
+    profileData = data
+    interpolatedData = interpolatedData(data: data)
+  }
   
   static func initData() -> [DoublePoint] {
     let data: [[Double]] = [

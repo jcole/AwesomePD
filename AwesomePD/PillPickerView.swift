@@ -12,6 +12,7 @@ import SnapKit
 
 protocol PillPickerViewDelegate {
   func pillSelected(pillView: PillView)
+  func pillShouldEdit(pillView: PillView)
 }
 
 class PillPickerView: UIView {
@@ -41,13 +42,21 @@ class PillPickerView: UIView {
     
     pills.forEach { (pill) in
       let pillView = PillView(pill: pill, color: colors[colorIndex])
+      pillViews.append(pillView)
+      
       colorIndex += 1
       if colorIndex >= colors.count {
         colorIndex = 1
       }
       
       pillView.isUserInteractionEnabled = true
-      pillView.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(pillViewTapped(sender:))))
+      let doubleTap = UITapGestureRecognizer(target: self, action: #selector(pillViewDoubleTapped(sender:)))
+      doubleTap.numberOfTapsRequired = 2
+      pillView.addGestureRecognizer(doubleTap)
+      let singleTap = UITapGestureRecognizer(target: self, action: #selector(pillViewTapped(sender:)))
+      singleTap.numberOfTapsRequired = 1
+      singleTap.require(toFail: doubleTap)
+      pillView.addGestureRecognizer(singleTap)
       addSubview(pillView)
       
       pillView.snp.makeConstraints({ (make) in
@@ -86,6 +95,12 @@ class PillPickerView: UIView {
                      completion: { (finished) in
         self.delegate?.pillSelected(pillView: pillView)
       })
+    }
+  }
+  
+  func pillViewDoubleTapped(sender: UITapGestureRecognizer) {
+    if let pillView = sender.view as? PillView {
+      self.delegate?.pillShouldEdit(pillView: pillView)
     }
   }
   

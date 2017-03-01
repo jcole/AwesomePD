@@ -10,20 +10,29 @@ import Foundation
 import UIKit
 import Charts
 
+protocol DefineCurveViewDelegate {
+  func pillCurveUpdated(pill: Pill, profileData: [DoublePoint])
+  func pillCurveCancelled()
+}
+
 class DefineCurveView: UIView, ChartViewDelegate {
 
   // Subviews
   let chartView = LineChartView()
   let chartLine = LineChartDataSet()
   var selectedPoint: ChartDataEntry?
+  var okView = UIImageView()
+  var cancelView = UIImageView()
+  
+  // Data
+  var delegate: DefineCurveViewDelegate?
+  var pill: Pill?
   
   // MARK: Init
   
   convenience init() {
     self.init(frame: CGRect.zero)
     setup()
-    
-    initData()
   }
   
   func setup() {
@@ -54,19 +63,37 @@ class DefineCurveView: UIView, ChartViewDelegate {
     chartLine.lineWidth = 4.0
     chartLine.setDrawHighlightIndicators(false)
     
+    // Ok/Cancel views
+    okView.backgroundColor = UIColor.green
+    okView.isUserInteractionEnabled = true
+    okView.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(okTapped)))
+    addSubview(okView)
+
+    cancelView.backgroundColor = UIColor.red
+    cancelView.isUserInteractionEnabled = true
+    cancelView.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(cancelTapped)))
+    addSubview(cancelView)
+
     // Constraints
     chartView.snp.makeConstraints { (make) in
       make.edges.equalTo(self).inset(UIEdgeInsetsMake(20, 20, 20, 20))
     }
+    
+    okView.snp.makeConstraints { (make) in
+      make.width.height.equalTo(60.0)
+      make.top.equalTo(self)
+      make.right.equalTo(cancelView.snp.left)
+    }
+    
+    cancelView.snp.makeConstraints { (make) in
+      make.width.height.equalTo(60.0)
+      make.top.right.equalTo(self)
+    }
   }
   
-  func initData() {
-    var dataValues:[ChartDataEntry] = []
-    dataValues.append(ChartDataEntry(x: 0, y: 0))
-    dataValues.append(ChartDataEntry(x: 1, y: 3))
-    dataValues.append(ChartDataEntry(x: 5, y: 2))
-    
-    chartLine.values = dataValues
+  func initData(data: [DoublePoint]) {
+    let chartDataValues = chartDataEntries(points: data)
+    chartLine.values = chartDataValues
     chartView.data = LineChartData(dataSets: [chartLine])
     chartView.notifyDataSetChanged()
   }
@@ -112,7 +139,6 @@ class DefineCurveView: UIView, ChartViewDelegate {
   
   // Data point tapped
   func chartValueSelected(_ chartView: ChartViewBase, entry: ChartDataEntry, highlight: Highlight) {
-    print("Selected: \(entry)")
     selectedPoint = entry
   }
   
@@ -126,7 +152,6 @@ class DefineCurveView: UIView, ChartViewDelegate {
           if gesture.state == .ended {
             let touchPoint = gesture.location(in: self.chartView)
             let dataPoint = self.chartView.valueForTouchPoint(point: touchPoint, axis: YAxis.AxisDependency.left)
-            print("Tap: \(touchPoint),  data : \(dataPoint)")
             addNewPointFromTouch(x: Double(dataPoint.x), y: Double(dataPoint.y))
           }
         }
@@ -157,6 +182,24 @@ class DefineCurveView: UIView, ChartViewDelegate {
       selectedPoint = point
       updateSelectedPoint(x: Double(dataPoint.x), y: Double(dataPoint.y))
     }
+  }
+  
+  func okTapped() {
+    let data = chartDataEntriesToDoubles(points: chartLine.values)
+    delegate?.pillCurveUpdated(pill: pill!, profileData: data)
+  }
+  
+  func cancelTapped() {
+    delegate?.pillCurveCancelled()
+  }
+  
+  // MARK: Load pill
+  
+  func showPill(pillView: PillView) {
+    self.pill = pillView.pill
+    chartLine.setColor(pillView.color)
+    chartLine.setCircleColor(pillView.color)
+    initData(data: pillView.pill.profileData)
   }
   
 }
