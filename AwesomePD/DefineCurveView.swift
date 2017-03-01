@@ -42,7 +42,7 @@ class DefineCurveView: UIView, ChartViewDelegate {
     // Chart formatting
     chartView.chartDescription?.textAlign = .left
     chartView.chartDescription?.position = CGPoint(x: 40.0, y: 40.0)
-    chartView.chartDescription?.font = NSUIFont.systemFont(ofSize: 32)
+    chartView.chartDescription?.font = UIFont.systemFont(ofSize: 32)
     chartView.delegate = self
     chartView.backgroundColor = UIColor.white
     chartView.highlightPerTapEnabled = true

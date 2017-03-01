@@ -25,6 +25,7 @@ class TimelineView: UIView, PillPickerViewDelegate {
   let pillPickerView: PillPickerView!
   var selectedPillViews: [PillView] = []
   var pillLongPressed: PillView?
+  var scoreLabel = UILabel()
   
   // Chart objects
   let totalSet = LineChartDataSet()
@@ -43,6 +44,7 @@ class TimelineView: UIView, PillPickerViewDelegate {
     super.init(frame: CGRect.zero)
 
     setup()
+    recalcData()
   }
   
   required init?(coder aDecoder: NSCoder) {
@@ -69,6 +71,11 @@ class TimelineView: UIView, PillPickerViewDelegate {
     pillPickerView.delegate = self
     addSubview(pillPickerView)
     
+    // Labels
+    scoreLabel.textAlignment = .left
+    scoreLabel.font = UIFont.systemFont(ofSize: 14.0)
+    addSubview(scoreLabel)
+    
     // Constraints
     pillPickerView.snp.makeConstraints { (make) in
       make.top.equalTo(self).offset(30.0)
@@ -81,6 +88,12 @@ class TimelineView: UIView, PillPickerViewDelegate {
       make.left.top.equalTo(self).offset(30.0)
       make.right.equalTo(self.pillPickerView.snp.left).offset(-30.0)
       make.bottom.equalTo(self).offset(-100.0)
+    }
+    
+    scoreLabel.snp.makeConstraints { (make) in
+      make.left.right.equalTo(self.pillPickerView)
+      make.height.equalTo(20.0)
+      make.top.equalTo(self.pillPickerView.snp.bottom).offset(10.0)
     }
   }
   
@@ -218,8 +231,14 @@ class TimelineView: UIView, PillPickerViewDelegate {
       set.values = chartDataEntries(points: pillView.pill.adjustedTimeData())
       sets.append(set)
     }
+
+    // Limits for score
+    let highLimit = highLimitLine.limit
+    let lowLimit = lowLimitLine.limit
+    var inRangeCount: Int = 0
+    var outOfRangeCount: Int = 0
     
-    // Calculate totals
+    // Calculate totals and score
     var totalData:[DoublePoint] = []
     for xValue in stride(from: chartMinTime, to: chartMaxTime, by: timeStep) {
       var totalVal:Double = 0
@@ -232,6 +251,12 @@ class TimelineView: UIView, PillPickerViewDelegate {
       })
       
       totalData.append(DoublePoint(x: xValue, y: totalVal))
+      
+      if ((totalVal >= lowLimit) && (totalVal <= highLimit)) {
+        inRangeCount += 1
+      } else {
+        outOfRangeCount += 1
+      }
     }
     totalSet.values = chartDataEntries(points: totalData)
     sets.append(totalSet)
@@ -239,6 +264,16 @@ class TimelineView: UIView, PillPickerViewDelegate {
     // Refresh chart with new sets
     chartView.data = LineChartData(dataSets: sets)
     chartView.notifyDataSetChanged()
+    
+    // Update score
+    let score = Int(100 * CGFloat(inRangeCount) / CGFloat(inRangeCount + outOfRangeCount))
+    let pctString = "\(score)%"
+    let attributedString = NSMutableAttributedString(string: "\(pctString) in range")
+    attributedString.addAttributes(
+      [NSFontAttributeName : UIFont.boldSystemFont(ofSize: 22.0)],
+      range: NSRange(location: 0, length: pctString.characters.count)
+    )
+    scoreLabel.attributedText = attributedString
   }
   
   func formatPillDataSet(set: LineChartDataSet, pillView: PillView) {
@@ -348,7 +383,7 @@ class TimelineView: UIView, PillPickerViewDelegate {
       } else if gesture.state == .changed {
         if let limitLine = selectedLimitLine {
           limitLine.limit = Double(dataPoint.y)
-          chartView.notifyDataSetChanged()
+          recalcData()
         }
       }
     }
