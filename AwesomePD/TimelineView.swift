@@ -71,7 +71,7 @@ class TimelineView: UIView, PillPickerViewDelegate {
     chartView.snp.makeConstraints { (make) in
       make.left.top.equalTo(self).offset(30.0)
       make.right.equalTo(self.pillPickerView.snp.left).offset(-30.0)
-      make.bottom.equalTo(self).offset(-80.0)
+      make.bottom.equalTo(self).offset(-100.0)
     }
   }
   
@@ -162,8 +162,8 @@ class TimelineView: UIView, PillPickerViewDelegate {
     addSubview(pillView)
     
     // Animate pill
-    pillView.transform = CGAffineTransform(scaleX: 0.2, y: 0.2)
-    UIView.animate(withDuration: 0.2,
+    pillView.transform = CGAffineTransform(scaleX: 0.8, y: 0.8)
+    UIView.animate(withDuration: 0.1,
                    delay: 0.0,
                    usingSpringWithDamping: 0.2,
                    initialSpringVelocity: 6.0,
@@ -242,6 +242,8 @@ class TimelineView: UIView, PillPickerViewDelegate {
   
   func adjustPillLocationBasedOnStartTime(pillView: PillView) {
     let locationX = locationForTime(time: pillView.pill.startTime)
+    
+    pillView.timeLabel.text = pillView.formattedStartTime()
     
     pillView.snp.remakeConstraints { (make) in
       make.width.equalTo(100.0)

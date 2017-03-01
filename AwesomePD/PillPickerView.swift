@@ -64,7 +64,7 @@ class PillPickerView: UIView {
         make.height.equalTo(pillView.frame.height)
         make.centerX.equalTo(self)
         if let last = lastPillView {
-          make.top.equalTo(last.snp.bottom).offset(20.0)
+          make.top.equalTo(last.snp.bottom).offset(45.0)
         } else {
           make.top.equalTo(self).offset(20.0)
         }
@@ -74,8 +74,9 @@ class PillPickerView: UIView {
     }
     
     backgroundColor = UIColor.clear
-    layer.borderColor = UIColor.black.cgColor
+    layer.borderColor = UIColor.lightGray.cgColor
     layer.borderWidth = 2.0
+    layer.cornerRadius = 5.0
   }
   
   // MARK: Gestures
@@ -83,8 +84,8 @@ class PillPickerView: UIView {
   func pillViewTapped(sender: UITapGestureRecognizer) {
     if let pillView = sender.view as? PillView {
       // Animate pill
-      pillView.transform = CGAffineTransform(scaleX: 0.5, y: 0.5)
-      UIView.animate(withDuration: 0.2,
+      pillView.transform = CGAffineTransform(scaleX: 0.8, y: 0.8)
+      UIView.animate(withDuration: 0.1,
                      delay: 0.0,
                      usingSpringWithDamping: 0.2,
                      initialSpringVelocity: 6.0,
