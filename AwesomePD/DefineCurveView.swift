@@ -40,6 +40,9 @@ class DefineCurveView: UIView, ChartViewDelegate {
     addSubview(chartView)
 
     // Chart formatting
+    chartView.chartDescription?.textAlign = .left
+    chartView.chartDescription?.position = CGPoint(x: 40.0, y: 40.0)
+    chartView.chartDescription?.font = NSUIFont.systemFont(ofSize: 32)
     chartView.delegate = self
     chartView.backgroundColor = UIColor.white
     chartView.highlightPerTapEnabled = true
@@ -60,16 +63,17 @@ class DefineCurveView: UIView, ChartViewDelegate {
     chartView.addGestureRecognizer(doubleTap)
 
     // Data set
+    chartLine.mode = .cubicBezier
     chartLine.lineWidth = 4.0
     chartLine.setDrawHighlightIndicators(false)
     
     // Ok/Cancel views
-    okView.backgroundColor = UIColor.green
+    okView.image = UIImage(named: "ok-icon")
     okView.isUserInteractionEnabled = true
     okView.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(okTapped)))
     addSubview(okView)
 
-    cancelView.backgroundColor = UIColor.red
+    cancelView.image = UIImage(named: "cancel-icon")
     cancelView.isUserInteractionEnabled = true
     cancelView.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(cancelTapped)))
     addSubview(cancelView)
@@ -79,15 +83,16 @@ class DefineCurveView: UIView, ChartViewDelegate {
       make.edges.equalTo(self).inset(UIEdgeInsetsMake(20, 20, 20, 20))
     }
     
-    okView.snp.makeConstraints { (make) in
-      make.width.height.equalTo(60.0)
-      make.top.equalTo(self)
-      make.right.equalTo(cancelView.snp.left)
-    }
-    
     cancelView.snp.makeConstraints { (make) in
-      make.width.height.equalTo(60.0)
-      make.top.right.equalTo(self)
+      make.width.height.equalTo(64.0)
+      make.right.equalTo(self).offset(-40.0)
+      make.top.equalTo(self).offset(40.0)
+    }
+
+    okView.snp.makeConstraints { (make) in
+      make.width.height.equalTo(64.0)
+      make.top.equalTo(self.cancelView)
+      make.right.equalTo(cancelView.snp.left).offset(-20)
     }
   }
   
@@ -199,6 +204,9 @@ class DefineCurveView: UIView, ChartViewDelegate {
     self.pill = pillView.pill
     chartLine.setColor(pillView.color)
     chartLine.setCircleColor(pillView.color)
+    let name = pillView.pill.name
+    chartLine.label = name
+    chartView.chartDescription?.text = "Define curve for \(name!)"
     initData(data: pillView.pill.profileData)
   }
   
