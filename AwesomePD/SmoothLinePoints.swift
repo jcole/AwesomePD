@@ -16,6 +16,7 @@ class SmoothLinePoints {
     let controlPoints = CubicCurveAlgorithm().controlPointsFromPoints(points)
     
     // Calculate points along Bezier curves
+    let resolution: CGFloat = 0.01
     var interpolatedPoints: [CGPoint] = []
     for i in 1 ..< points.count {
       if i == points.count - 1 {
@@ -26,7 +27,7 @@ class SmoothLinePoints {
         let segment = controlPoints[i-1]
         let cp1 = segment.controlPoint1
         let cp2 = segment.controlPoint2
-        for pct:CGFloat in stride(from: 0.0, to: 1.0, by: 0.1) {
+        for pct:CGFloat in stride(from: 0.0, to: 1.0, by: resolution) {
           let x = valueAlongCubicBezier(t: pct, start: start.x, c1: cp1.x, c2: cp2.x, end: end.x)
           let y = valueAlongCubicBezier(t: pct, start: start.y, c1: cp1.y, c2: cp2.y, end: end.y)
           interpolatedPoints.append(CGPoint(x: x, y: y))

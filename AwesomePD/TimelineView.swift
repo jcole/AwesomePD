@@ -18,7 +18,8 @@ protocol TimelineViewProtocol {
 class TimelineView: UIView, PillPickerViewDelegate {
   
   // Constants
-  let timeStep: Double = 0.25
+  let timeStep: Double = 0.25 // For snapping pills to timeline
+  let totalStep: Double = 0.1 // Resolution of calculating total value
   
   // Views
   let chartView = LineChartView()
@@ -134,7 +135,7 @@ class TimelineView: UIView, PillPickerViewDelegate {
     // Total data set
     totalSet.label = "total effect"
     totalSet.setColor(UIColor.yellow)
-    totalSet.mode = .cubicBezier
+    totalSet.mode = .linear
     totalSet.drawFilledEnabled = false
     totalSet.drawCirclesEnabled = false
     totalSet.drawValuesEnabled = false
@@ -252,16 +253,20 @@ class TimelineView: UIView, PillPickerViewDelegate {
     
     // Calculate totals and score
     var totalData:[DoublePoint] = []
-    for xValue in stride(from: chartMinTime, to: chartMaxTime, by: timeStep) {
+    for xValue in stride(from: chartMinTime, to: chartMaxTime, by: totalStep) {
       var totalVal:Double = 0
       sets.forEach({ (set) in
         if Double(xValue) >= set.xMin {
           if let setVal = set.entryForXValue(Double(xValue), closestToY: 0.0)?.y {
+            //print("xValue: \(xValue), set: \(set.label), setVal: \(setVal)")
             totalVal += setVal
+          } else {
+            //print("xValue: \(xValue), set: \(set.label), setVal: NONE")
           }
+          
         }
       })
-      
+      //print("xValue: Total: \(totalVal)")
       totalData.append(DoublePoint(x: xValue, y: totalVal))
       
       if ((totalVal >= lowLimit) && (totalVal <= highLimit)) {
