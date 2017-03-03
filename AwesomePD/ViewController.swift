@@ -48,21 +48,43 @@ class ViewController: UIViewController, TimelineViewProtocol, DefineCurveViewDel
     // DefineCurveView
     defineCurveView.delegate = self
     view.addSubview(defineCurveView)
+    
+    defineCurveView.isHidden = true
     defineCurveView.snp.makeConstraints { (make) in
       make.edges.equalTo(self.view)
     }
-    
-    hideDefineCurve()
   }
   
   func hideDefineCurve() {
-    timelineView.isHidden = false
-    defineCurveView.isHidden = true
+    defineCurveView.snp.remakeConstraints { (make) in
+      make.height.width.equalTo(self.view)
+      make.top.equalTo(self.view.snp.bottom)
+      make.left.equalTo(0)
+    }
+    UIView.animate(withDuration: 0.3, animations: { 
+      self.view.layoutIfNeeded()
+    }) { (completed) in
+      self.defineCurveView.isHidden = true
+    }
   }
   
   func showDefineCurve() {
+    // Place off-screen
+    defineCurveView.snp.remakeConstraints { (make) in
+      make.height.width.equalTo(self.view)
+      make.top.equalTo(self.view.snp.bottom)
+      make.left.equalTo(0)
+    }
+    self.view.layoutIfNeeded()
+    
+    // Animate up
     defineCurveView.isHidden = false
-    timelineView.isHidden = true
+    defineCurveView.snp.remakeConstraints { (make) in
+      make.edges.equalTo(self.view)
+    }
+    UIView.animate(withDuration: 0.3) {
+      self.view.layoutIfNeeded()
+    }
   }
   
   // MARK: Setup pill data
