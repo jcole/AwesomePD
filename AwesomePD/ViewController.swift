@@ -90,11 +90,7 @@ class ViewController: UIViewController, TimelineViewProtocol, DefineCurveViewDel
   // MARK: Setup pill data
   
   func initData() {
-    pills = [
-      Pill(name: "Levodopa", profileData: Pill.initData()),
-      Pill(name: "Sinemet", profileData: Pill.initData()),
-      Pill(name: "Wacky pill", profileData: Pill.initData())
-    ]
+    pills = Pill.availablePills()
   }
   
   // MARK: TimelineViewProtocol

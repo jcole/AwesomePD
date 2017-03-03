@@ -37,7 +37,13 @@ class PillPickerView: UIView {
 
   func setup(pills: [Pill]) {
     var lastPillView: PillView? = nil
-    let colors: [UIColor] = [.cyan, .red, .green, .purple]
+    let colors: [UIColor] = [
+      UIColor(hex: 0xd7191c),
+      UIColor(hex: 0xfdae61),
+      UIColor(hex: 0xfee08b),
+      UIColor(hex: 0xabdda4),
+      UIColor(hex: 0x2b83ba)
+    ]
     var colorIndex = 0
     
     pills.forEach { (pill) in

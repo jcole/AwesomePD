@@ -15,6 +15,15 @@ protocol DefineCurveViewDelegate {
   func pillCurveCancelled()
 }
 
+class DataFormatter: NSObject, IValueFormatter {
+  override init() { }
+  func stringForValue(_ value: Double, entry: ChartDataEntry, dataSetIndex: Int, viewPortHandler: ViewPortHandler?) -> String {
+    let xStr = String(format: "%0.1f", entry.x)
+    let yStr = String(format: "%0.1f", entry.y)
+    return "\(xStr), \(yStr)"
+  }
+}
+
 class DefineCurveView: UIView, ChartViewDelegate {
 
   // Subviews
@@ -66,6 +75,8 @@ class DefineCurveView: UIView, ChartViewDelegate {
     chartLine.mode = .cubicBezier
     chartLine.lineWidth = 4.0
     chartLine.setDrawHighlightIndicators(false)
+    chartLine.valueFormatter = DataFormatter()
+    chartLine.valueFont = UIFont.systemFont(ofSize: 14.0)
     
     // Ok/Cancel views
     okView.image = UIImage(named: "ok-icon")

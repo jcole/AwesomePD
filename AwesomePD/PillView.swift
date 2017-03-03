@@ -49,12 +49,13 @@ class PillView: UIView {
     addSubview(nameLabel)
 
     timeLabel.textAlignment = .center
-    timeLabel.textColor = UIColor.darkGray
+    timeLabel.textColor = UIColor.lightGray
     addSubview(timeLabel)
     
     // Constraints
     nameLabel.snp.makeConstraints({ (make) in
-      make.left.right.equalTo(self)
+      make.centerX.equalTo(self)
+      make.width.equalTo(200.0)
       make.height.equalTo(20.0)
       make.top.equalTo(self.snp.bottom).offset(5.0)
     })

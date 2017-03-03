@@ -9,9 +9,18 @@
 import Foundation
 import UIKit
 
+enum PillType {
+  case Sinemet
+  case Stalevo
+  case Rotary
+  case SinemetEntacapone
+  case RotigotinePatch
+}
+
 class Pill {
   
   // Properties
+  var type: PillType!
   var name:String!
   var startTime:Double = 0.0
   var profileData:[DoublePoint] = []
@@ -19,7 +28,8 @@ class Pill {
 
   // MARK: Init
   
-  init(name: String, profileData:[DoublePoint]) {
+  init(type: PillType, name: String, profileData: [DoublePoint]) {
+    self.type = type
     self.name = name
     updateProfileData(data: profileData)
   }
@@ -27,7 +37,21 @@ class Pill {
   // MARK: Clone
   
   func clone() -> Pill {
-    return Pill(name: name, profileData: profileData)
+    return Pill(type: type, name: name, profileData: profileData)
+  }
+  
+  // MARK: Available pills
+  
+  static func availablePills() -> [Pill] {
+    let pills: [Pill] = [
+      Pill(type: .Sinemet, name: "Sinemet", profileData: defaultProfileDataForType(type: .Sinemet)),
+      Pill(type: .Stalevo, name: "Stalevo ", profileData: defaultProfileDataForType(type: .Stalevo)),
+      Pill(type: .Rotary, name: "Rotary", profileData: defaultProfileDataForType(type: .Rotary)),
+      Pill(type: .SinemetEntacapone, name: "Sinemet + Entacapone", profileData: defaultProfileDataForType(type: .SinemetEntacapone)),
+      Pill(type: .RotigotinePatch, name: "Rotigotine patch", profileData: defaultProfileDataForType(type: .RotigotinePatch)),
+    ]
+    
+    return pills
   }
   
   // MARK: Data methods
@@ -57,23 +81,67 @@ class Pill {
     interpolatedData = interpolatedData(data: data)
   }
   
-  static func initData() -> [DoublePoint] {
-    let data: [[Double]] = [
-      [0.0, 0.0],
-      [0.61218177028937, 1.94435243458099],
-      [1.17893019265716, 3.28324122661739],
-      [2.22426617169107, 3.91549426730124],
-      [3.54667915721591, 4.01963006223741],
-      [4.80612009581098, 3.48407454542285],
-      [5.58697347773993, 2.8741363179396],
-      [6.70787591308956, 1.83277836857795],
-      [7.65245661703586, 0.984815466954901],
-      [9.40307952168303, 0.590587100410849],
-      [11.7456396674699, 0.374877239471651],
-      [14.4282488666774, 0.114537752131239],
-      [15.1461302016766, 0.0178402282619441],
-      [16.2670326370262, 0.0]
-    ]
+  static func defaultProfileDataForType(type: PillType) -> [DoublePoint] {
+    var data: [[Double]]
+    
+    switch type {
+    case .Sinemet:
+      data = [
+        [0.0, 0.0],
+        [0.5, 1.87],
+        [1.0, 4.0],
+        [1.5, 3.21],
+        [4.0, 0.68],
+        [10.0, 0.0]
+      ]
+
+    case .Stalevo:
+      data = [
+        [0.0, 0.0],
+        [0.75, 1.94],
+        [2.0, 3.95],
+        [4.0, 2.69],
+        [6.0, 1.34],
+        [10.0, 0.0]
+      ]
+
+    case .Rotary:
+      data = [
+        [0.0, 0.0],
+        [0.5, 1.87],
+        [1.0, 4.0],
+        [2.0, 3.93],
+        [3.0, 4.69],
+        [4.0, 3.61],
+        [6.0, 4.63],
+        [8.0, 1.97],
+        [12.0, 1.04],
+        [16.0, 0.55],
+        [20.0, 0.0]
+      ]
+
+    case .SinemetEntacapone:
+      data = [
+        [0.0, 0.0],
+        [1.0, 1.87],
+        [1.8, 5.95],
+        [2.8, 3.85],
+        [4.0, 1.92],
+        [10.0, 0.0]
+      ]
+
+    case .RotigotinePatch:
+      data = [
+        [0.0, 0.0],
+        [1.0, 2.0],
+        [2.0, 4.0],
+        [4.0, 4.0],
+        [8.0, 4.0],
+        [12.0, 4.0],
+        [14.0, 0.0]
+      ]
+    }
+    
     var points: [DoublePoint] = []
     data.forEach { (pair) in
       points.append(DoublePoint(x: pair[0], y: pair[1]))
