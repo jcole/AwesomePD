@@ -95,7 +95,7 @@ class TimelineView: UIView, PillPickerViewDelegate {
     
     scoreLabel.snp.makeConstraints { (make) in
       make.left.right.equalTo(self.pillPickerView)
-      make.height.equalTo(20.0)
+      make.height.equalTo(30.0)
       make.top.equalTo(self.pillPickerView.snp.bottom).offset(10.0)
     }
   }
