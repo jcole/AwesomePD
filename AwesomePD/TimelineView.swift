@@ -24,8 +24,9 @@ class TimelineView: UIView, PillPickerViewDelegate {
   // Views
   let chartView = LineChartView()
   let pillPickerView: PillPickerView!
-  var selectedPillViews: [PillView] = []
-  var pillLongPressed: PillView?
+  var timelinePillViews: [PillView] = []
+  var pillViewLongPressed: PillView?
+  var pillViewBeingAdded: PillView?
   var scoreLabel = UILabel()
   
   // Chart objects
@@ -33,6 +34,7 @@ class TimelineView: UIView, PillPickerViewDelegate {
   var lowLimitLine: ChartLimitLine!
   var highLimitLine: ChartLimitLine!
   var selectedLimitLine: ChartLimitLine?
+  var pillBeingAddedLimitLine: ChartLimitLine!
   
   // Data
   var delegate: TimelineViewProtocol?
@@ -132,6 +134,12 @@ class TimelineView: UIView, PillPickerViewDelegate {
     chartView.xAxis.axisMaximum = chartMaxTime
     chartView.xAxis.drawGridLinesEnabled = true
     
+    // Limit line for pill being added
+    pillBeingAddedLimitLine = ChartLimitLine(limit: 0.0)
+    pillBeingAddedLimitLine.lineWidth = 1.0
+    pillBeingAddedLimitLine.enabled = false
+    chartView.xAxis.addLimitLine(pillBeingAddedLimitLine)
+    
     // Total data set
     totalSet.label = "total effect"
     totalSet.setColor(UIColor.yellow)
@@ -171,20 +179,63 @@ class TimelineView: UIView, PillPickerViewDelegate {
   
   // MARK: PillPickerViewDelegate
   
-  func pillSelected(pillView: PillView) {
-    let pillCopy = pillView.clone()
-    addPill(pillView: pillCopy)
-    stopCurrentPillLongPressed()
+  func pillPickerPillViewShouldEdit(pillView: PillView) {
+    delegate?.pillShouldEdit(pillView: pillView)
   }
   
-  func pillShouldEdit(pillView: PillView) {
-    delegate?.pillShouldEdit(pillView: pillView)
+  func pillPickerPillViewPanned(pillView: PillView, gesture: UIPanGestureRecognizer) {
+    let location = gesture.location(in: self)
+
+    if gesture.state == .began {
+      stopCurrentPillViewLongPressed()
+      
+      pillViewBeingAdded = pillView.clone()
+      addSubview(pillViewBeingAdded!)
+      pillViewBeingAdded!.center = location
+      
+      pillPickerView.hidePillView(pillView: pillView)
+      
+      pillBeingAddedLimitLine.lineColor = pillView.color
+    } else if gesture.state == .ended {
+      if pillViewBeingAdded != nil {
+        if chartView.frame.contains(location) {
+          // Hide limit line
+          pillBeingAddedLimitLine.enabled = false
+
+          // Add pill to timeline
+          pillViewBeingAdded!.center = location
+          let pillCopy = pillView.clone()
+          addPill(pillView: pillCopy, locationX: location.x)
+        }
+        
+        // Remove from view
+        pillViewBeingAdded!.removeFromSuperview()
+        pillViewBeingAdded = nil
+        
+        // Re-show in picker
+        pillPickerView.showPillView(pillView: pillView)
+      }
+    } else {
+      if let pillView = pillViewBeingAdded {
+        pillView.center = location
+        if chartView.frame.contains(location) {
+          pillView.nameLabel.textColor = UIColor.white
+          pillBeingAddedLimitLine.limit = timeForLocationX(x: location.x)
+          pillBeingAddedLimitLine.enabled = true
+          chartView.notifyDataSetChanged()
+        } else {
+          pillView.nameLabel.textColor = UIColor.black
+          pillBeingAddedLimitLine.enabled = false
+          chartView.notifyDataSetChanged()
+        }
+      }
+    }
   }
   
   // MARK: Pills
   
-  func addPill(pillView: PillView) {
-    selectedPillViews.append(pillView)
+  func addPill(pillView: PillView, locationX: CGFloat) {
+    timelinePillViews.append(pillView)
     addSubview(pillView)
     
     // Animate pill
@@ -205,7 +256,7 @@ class TimelineView: UIView, PillPickerViewDelegate {
     // pan
     pillView.addGestureRecognizer(UIPanGestureRecognizer(target: self, action: #selector(pillPanned(recognizer:))))
     // long press
-    let longPress = UILongPressGestureRecognizer(target: self, action: #selector(pillLongPressed(recognizer:)))
+    let longPress = UILongPressGestureRecognizer(target: self, action: #selector(pillViewLongPressed(recognizer:)))
     longPress.minimumPressDuration = 0.75
     pillView.addGestureRecognizer(longPress)
     // double tap
@@ -220,15 +271,15 @@ class TimelineView: UIView, PillPickerViewDelegate {
     pillView.addGestureRecognizer(singleTap)
     
     
-    pillView.pill.startTime = 12.0
+    pillView.pill.startTime = timeForLocationX(x: locationX)
     adjustPillLocationBasedOnStartTime(pillView: pillView)
     
     recalcData()
   }
   
   func removePill(pill: PillView) {
-    if let index = selectedPillViews.index(of: pill) {
-      selectedPillViews.remove(at: index)
+    if let index = timelinePillViews.index(of: pill) {
+      timelinePillViews.remove(at: index)
       pill.removeFromSuperview()
       recalcData()
     }
@@ -238,7 +289,7 @@ class TimelineView: UIView, PillPickerViewDelegate {
     var sets:[LineChartDataSet] = []
     
     // Create sets for each pill
-    selectedPillViews.forEach { (pillView) in
+    timelinePillViews.forEach { (pillView) in
       let set = LineChartDataSet()
       formatPillDataSet(set: set, pillView: pillView)
       set.values = chartDataEntries(points: pillView.pill.adjustedTimeData())
@@ -319,7 +370,7 @@ class TimelineView: UIView, PillPickerViewDelegate {
   }
   
   func pillPanned(recognizer: UIPanGestureRecognizer) {
-    stopCurrentPillLongPressed()
+    stopCurrentPillViewLongPressed()
     
     if let pillView = recognizer.view as? PillView {
       // Check bounds of button location
@@ -340,11 +391,11 @@ class TimelineView: UIView, PillPickerViewDelegate {
     }
   }
   
-  func pillLongPressed(recognizer: UIPanGestureRecognizer) {
-    stopCurrentPillLongPressed()
+  func pillViewLongPressed(recognizer: UIPanGestureRecognizer) {
+    stopCurrentPillViewLongPressed()
     
     if let pillView = recognizer.view as? PillView {
-      pillLongPressed = pillView
+      pillViewLongPressed = pillView
       
       // Animate pill shimmy
       pillView.transform = CGAffineTransform(rotationAngle: CGFloat.pi * -3.0 / 180.0)
@@ -360,12 +411,12 @@ class TimelineView: UIView, PillPickerViewDelegate {
   
   func pillTapped(recognizer: UIPanGestureRecognizer) {
     if let pillView = recognizer.view as? PillView {
-      if pillView == pillLongPressed {
+      if pillView == pillViewLongPressed {
         removePill(pill: pillView)
       }
     }
     
-    pillLongPressed = nil
+    pillViewLongPressed = nil
   }
   
   func pillDoubleTapped(recognizer: UIPanGestureRecognizer) {
@@ -373,27 +424,27 @@ class TimelineView: UIView, PillPickerViewDelegate {
       delegate?.pillShouldEdit(pillView: pillView)
     }
     
-    pillLongPressed = nil
+    pillViewLongPressed = nil
   }
   
-  func stopCurrentPillLongPressed() {
-    if pillLongPressed != nil {
-      pillLongPressed!.layer.removeAllAnimations()
-      pillLongPressed!.transform = .identity
+  func stopCurrentPillViewLongPressed() {
+    if pillViewLongPressed != nil {
+      pillViewLongPressed!.layer.removeAllAnimations()
+      pillViewLongPressed!.transform = .identity
     }
-    pillLongPressed = nil
+    pillViewLongPressed = nil
   }
   
   // MARK: Screen gesture
   
   func screenTapped() {
-    stopCurrentPillLongPressed()
+    stopCurrentPillViewLongPressed()
   }
   
   // MARK: Chart gesture
   
   func chartTapped(gesture: UIPanGestureRecognizer) {
-    stopCurrentPillLongPressed()
+    stopCurrentPillViewLongPressed()
   }
   
   func chartPanned(gesture: UIPanGestureRecognizer) {
@@ -430,7 +481,7 @@ class TimelineView: UIView, PillPickerViewDelegate {
   // MARK: Refresh pill data
   
   func refreshPillData(pill: Pill, profileData: [DoublePoint]) {
-    let pillViewsToCheck: [PillView] = selectedPillViews + pillPickerView.pillViews
+    let pillViewsToCheck: [PillView] = timelinePillViews + pillPickerView.pillViews
 
     pillViewsToCheck.forEach { (pillView) in
       if pillView.pill.name == pill.name {

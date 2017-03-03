@@ -11,8 +11,8 @@ import UIKit
 import SnapKit
 
 protocol PillPickerViewDelegate {
-  func pillSelected(pillView: PillView)
-  func pillShouldEdit(pillView: PillView)
+  func pillPickerPillViewShouldEdit(pillView: PillView)
+  func pillPickerPillViewPanned(pillView: PillView, gesture: UIPanGestureRecognizer)
 }
 
 class PillPickerView: UIView {
@@ -43,21 +43,21 @@ class PillPickerView: UIView {
     pills.forEach { (pill) in
       let pillView = PillView(pill: pill, color: colors[colorIndex])
       pillViews.append(pillView)
-      
+      addSubview(pillView)
+
       colorIndex += 1
       if colorIndex >= colors.count {
         colorIndex = 1
       }
       
       pillView.isUserInteractionEnabled = true
-      let doubleTap = UITapGestureRecognizer(target: self, action: #selector(pillViewDoubleTapped(sender:)))
+      
+      let doubleTap = UITapGestureRecognizer(target: self, action: #selector(pillViewDoubleTapped(gesture:)))
       doubleTap.numberOfTapsRequired = 2
       pillView.addGestureRecognizer(doubleTap)
-      let singleTap = UITapGestureRecognizer(target: self, action: #selector(pillViewTapped(sender:)))
-      singleTap.numberOfTapsRequired = 1
-      singleTap.require(toFail: doubleTap)
-      pillView.addGestureRecognizer(singleTap)
-      addSubview(pillView)
+
+      let panGesture = UIPanGestureRecognizer(target: self, action: #selector(pillViewPanned(gesture:)))
+      pillView.addGestureRecognizer(panGesture)
       
       pillView.snp.makeConstraints({ (make) in
         make.width.equalTo(pillView.frame.width)
@@ -81,28 +81,26 @@ class PillPickerView: UIView {
   
   // MARK: Gestures
   
-  func pillViewTapped(sender: UITapGestureRecognizer) {
-    if let pillView = sender.view as? PillView {
-      // Animate pill
-      pillView.transform = CGAffineTransform(scaleX: 0.8, y: 0.8)
-      UIView.animate(withDuration: 0.1,
-                     delay: 0.0,
-                     usingSpringWithDamping: 0.2,
-                     initialSpringVelocity: 6.0,
-                     options: .allowUserInteraction,
-                     animations: {
-                      pillView.transform = .identity
-                      },
-                     completion: { (finished) in
-        self.delegate?.pillSelected(pillView: pillView)
-      })
+  func pillViewDoubleTapped(gesture: UITapGestureRecognizer) {
+    if let pillView = gesture.view as? PillView {
+      delegate?.pillPickerPillViewShouldEdit(pillView: pillView)
     }
   }
   
-  func pillViewDoubleTapped(sender: UITapGestureRecognizer) {
-    if let pillView = sender.view as? PillView {
-      self.delegate?.pillShouldEdit(pillView: pillView)
+  func pillViewPanned(gesture: UIPanGestureRecognizer) {
+    if let pillView = gesture.view as? PillView {
+      delegate?.pillPickerPillViewPanned(pillView: pillView, gesture: gesture)
     }
+  }
+  
+  // MARK: When selected
+  
+  func hidePillView(pillView: PillView) {
+    pillView.isHidden = true
+  }
+
+  func showPillView(pillView: PillView) {
+    pillView.isHidden = false
   }
   
 }
