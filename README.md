@@ -1,5 +1,7 @@
 # AwesomePD
 
+![Awesome PD demo](https://cloud.githubusercontent.com/assets/12082/23618209/9d873a76-025d-11e7-9b9d-245ae00c079c.gif)
+
 A super-secret prototype in collaboration with [Paul Wicks](https://www.linkedin.com/in/paulwicks/) of [PatientsLikeMe](https://www.patientslikeme.com/).
 Goal is to allow patients to see the cumulative effects of treatments taken in the course of a daily regimen.
 
