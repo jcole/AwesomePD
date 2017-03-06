@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		1F44159B1E6DC4F200D84EED /* AwesomePDTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1F44159A1E6DC4F200D84EED /* AwesomePDTests.swift */; };
 		1F6352FE1E5E064D00BD1800 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1F6352FD1E5E064D00BD1800 /* AppDelegate.swift */; };
 		1F6353001E5E064D00BD1800 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1F6352FF1E5E064D00BD1800 /* ViewController.swift */; };
 		1F6353031E5E064D00BD1800 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 1F6353011E5E064D00BD1800 /* Main.storyboard */; };
@@ -25,7 +26,20 @@
 		A1FB528D078072CAE4448DD0 /* Pods_AwesomePD.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9A23FCF5DFB6112459A173A8 /* Pods_AwesomePD.framework */; };
 /* End PBXBuildFile section */
 
+/* Begin PBXContainerItemProxy section */
+		1F44159D1E6DC4F200D84EED /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 1F6352F21E5E064D00BD1800 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 1F6352F91E5E064D00BD1800;
+			remoteInfo = AwesomePD;
+		};
+/* End PBXContainerItemProxy section */
+
 /* Begin PBXFileReference section */
+		1F4415981E6DC4F100D84EED /* AwesomePDTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = AwesomePDTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		1F44159A1E6DC4F200D84EED /* AwesomePDTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AwesomePDTests.swift; sourceTree = "<group>"; };
+		1F44159C1E6DC4F200D84EED /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		1F6352FA1E5E064D00BD1800 /* AwesomePD.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = AwesomePD.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		1F6352FD1E5E064D00BD1800 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		1F6352FF1E5E064D00BD1800 /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
@@ -49,6 +63,13 @@
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
+		1F4415951E6DC4F100D84EED /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		1F6352F71E5E064D00BD1800 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
@@ -60,10 +81,20 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		1F4415991E6DC4F200D84EED /* AwesomePDTests */ = {
+			isa = PBXGroup;
+			children = (
+				1F44159A1E6DC4F200D84EED /* AwesomePDTests.swift */,
+				1F44159C1E6DC4F200D84EED /* Info.plist */,
+			);
+			path = AwesomePDTests;
+			sourceTree = "<group>";
+		};
 		1F6352F11E5E064D00BD1800 = {
 			isa = PBXGroup;
 			children = (
 				1F6352FC1E5E064D00BD1800 /* AwesomePD */,
+				1F4415991E6DC4F200D84EED /* AwesomePDTests */,
 				1F6352FB1E5E064D00BD1800 /* Products */,
 				EEC3B2F523BCB31471C953F7 /* Pods */,
 				DC53523A9CC29F068019F211 /* Frameworks */,
@@ -74,6 +105,7 @@
 			isa = PBXGroup;
 			children = (
 				1F6352FA1E5E064D00BD1800 /* AwesomePD.app */,
+				1F4415981E6DC4F100D84EED /* AwesomePDTests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -169,6 +201,24 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
+		1F4415971E6DC4F100D84EED /* AwesomePDTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 1F4415A11E6DC4F200D84EED /* Build configuration list for PBXNativeTarget "AwesomePDTests" */;
+			buildPhases = (
+				1F4415941E6DC4F100D84EED /* Sources */,
+				1F4415951E6DC4F100D84EED /* Frameworks */,
+				1F4415961E6DC4F100D84EED /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				1F44159E1E6DC4F200D84EED /* PBXTargetDependency */,
+			);
+			name = AwesomePDTests;
+			productName = AwesomePDTests;
+			productReference = 1F4415981E6DC4F100D84EED /* AwesomePDTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
 		1F6352F91E5E064D00BD1800 /* AwesomePD */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = 1F63530C1E5E064D00BD1800 /* Build configuration list for PBXNativeTarget "AwesomePD" */;
@@ -199,6 +249,12 @@
 				LastUpgradeCheck = 0820;
 				ORGANIZATIONNAME = "Team Awesome";
 				TargetAttributes = {
+					1F4415971E6DC4F100D84EED = {
+						CreatedOnToolsVersion = 8.2.1;
+						DevelopmentTeam = R4WBH7HRLU;
+						ProvisioningStyle = Automatic;
+						TestTargetID = 1F6352F91E5E064D00BD1800;
+					};
 					1F6352F91E5E064D00BD1800 = {
 						CreatedOnToolsVersion = 8.2.1;
 						DevelopmentTeam = R4WBH7HRLU;
@@ -220,11 +276,19 @@
 			projectRoot = "";
 			targets = (
 				1F6352F91E5E064D00BD1800 /* AwesomePD */,
+				1F4415971E6DC4F100D84EED /* AwesomePDTests */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXResourcesBuildPhase section */
+		1F4415961E6DC4F100D84EED /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		1F6352F81E5E064D00BD1800 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -286,6 +350,14 @@
 /* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
+		1F4415941E6DC4F100D84EED /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				1F44159B1E6DC4F200D84EED /* AwesomePDTests.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		1F6352F61E5E064D00BD1800 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -307,6 +379,14 @@
 		};
 /* End PBXSourcesBuildPhase section */
 
+/* Begin PBXTargetDependency section */
+		1F44159E1E6DC4F200D84EED /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 1F6352F91E5E064D00BD1800 /* AwesomePD */;
+			targetProxy = 1F44159D1E6DC4F200D84EED /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
 /* Begin PBXVariantGroup section */
 		1F6353011E5E064D00BD1800 /* Main.storyboard */ = {
 			isa = PBXVariantGroup;
@@ -327,6 +407,34 @@
 /* End PBXVariantGroup section */
 
 /* Begin XCBuildConfiguration section */
+		1F44159F1E6DC4F200D84EED /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				DEVELOPMENT_TEAM = R4WBH7HRLU;
+				INFOPLIST_FILE = AwesomePDTests/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = jcole.teamawesome.com.AwesomePDTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 3.0;
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/AwesomePD.app/AwesomePD";
+			};
+			name = Debug;
+		};
+		1F4415A01E6DC4F200D84EED /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				DEVELOPMENT_TEAM = R4WBH7HRLU;
+				INFOPLIST_FILE = AwesomePDTests/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = jcole.teamawesome.com.AwesomePDTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 3.0;
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/AwesomePD.app/AwesomePD";
+			};
+			name = Release;
+		};
 		1F63530A1E5E064D00BD1800 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -451,6 +559,14 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
+		1F4415A11E6DC4F200D84EED /* Build configuration list for PBXNativeTarget "AwesomePDTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				1F44159F1E6DC4F200D84EED /* Debug */,
+				1F4415A01E6DC4F200D84EED /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+		};
 		1F6352F51E5E064D00BD1800 /* Build configuration list for PBXProject "AwesomePD" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
