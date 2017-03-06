@@ -14,21 +14,21 @@ pod install
 
 ## Using the app
 
-When you add treatments to the timeline, you'll see a curve representing that treatment's effect over time.
-If you add multiple treatments, you'll see a yellow line showing the combined effect.
+Each treatment in the timeline has a curve showing its effect over time.
+A yellow line shows the combined effect of all treatments.
 Goal is to keep the combined effect within the high and low range.
 
-**To add treatments to the timeline**
+**To add a treatment to the timeline**
 
-* Drag and drop a pill from the picker on the right to the chart to add it.
-* Slide the pill left and right to move on the timeline.
-* To delete a pill on the timeline, long press it.  When it starts to wiggle, click again to delete.
+* Drag and drop a pill from the picker on the right to the chart.
+* Slide it left and right to move on the timeline.
+* To delete a pill, long press it.  When it starts to wiggle, click again to delete.
 
-**To change what the treatment curve looks like for a pill**
+**To edit a pill's treatment curve**
 
 * Double click a pill, either on the timeline or in the picker.
 * In the curve editor that pops up, drag the individual points around to re-shape the curve.
-* Click on the editor to add a new point.
+* Click anywhere on the editor to add a new point.
 * Double-click a point to remove it.
 
 **To modify the high and low range limits**
