@@ -340,7 +340,6 @@ class TimelineView: UIView, PillPickerViewDelegate {
     let singleTap = UITapGestureRecognizer(target: self, action: #selector(timelinePillViewTapped(recognizer:)))
     singleTap.numberOfTapsRequired = 1
     singleTap.require(toFail: doubleTap)
-    //todo
     pillView.addGestureRecognizer(singleTap)
     
     
