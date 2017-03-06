@@ -12,6 +12,8 @@ cd <project-dir>
 pod install
 ```
 
+Then open AwesomePD.xcworkspace.
+
 ## Using the app
 
 Each treatment in the timeline has a curve showing its effect over time.
