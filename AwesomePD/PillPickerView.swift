@@ -70,9 +70,9 @@ class PillPickerView: UIView {
         make.height.equalTo(pillView.frame.height)
         make.centerX.equalTo(self)
         if let last = lastPillView {
-          make.top.equalTo(last.snp.bottom).offset(45.0)
+          make.top.equalTo(last.snp.bottom).offset(40.0)
         } else {
-          make.top.equalTo(self).offset(20.0)
+          make.top.equalTo(self).offset(25.0)
         }
       })
       

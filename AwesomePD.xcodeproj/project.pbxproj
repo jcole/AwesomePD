@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		1F3B75781E7055FE00A555D0 /* TimeFormatter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1F3B75771E7055FE00A555D0 /* TimeFormatter.swift */; };
+		1F3B757A1E7058F900A555D0 /* LevelSelectView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1F3B75791E7058F900A555D0 /* LevelSelectView.swift */; };
 		1F44159B1E6DC4F200D84EED /* AwesomePDTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1F44159A1E6DC4F200D84EED /* AwesomePDTests.swift */; };
 		1F6352FE1E5E064D00BD1800 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1F6352FD1E5E064D00BD1800 /* AppDelegate.swift */; };
 		1F6353001E5E064D00BD1800 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1F6352FF1E5E064D00BD1800 /* ViewController.swift */; };
@@ -39,6 +40,7 @@
 
 /* Begin PBXFileReference section */
 		1F3B75771E7055FE00A555D0 /* TimeFormatter.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TimeFormatter.swift; sourceTree = "<group>"; };
+		1F3B75791E7058F900A555D0 /* LevelSelectView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LevelSelectView.swift; sourceTree = "<group>"; };
 		1F4415981E6DC4F100D84EED /* AwesomePDTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = AwesomePDTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		1F44159A1E6DC4F200D84EED /* AwesomePDTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AwesomePDTests.swift; sourceTree = "<group>"; };
 		1F44159C1E6DC4F200D84EED /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -132,6 +134,7 @@
 				1FC21C4F1E5F5D8B006FB8D4 /* PillPickerView.swift */,
 				1F6B9DED1E65DFBB00656B47 /* PillView.swift */,
 				1F6B9DEA1E65D3B400656B47 /* TimelineView.swift */,
+				1F3B75791E7058F900A555D0 /* LevelSelectView.swift */,
 			);
 			name = Views;
 			sourceTree = "<group>";
@@ -368,6 +371,7 @@
 				1FC21C4C1E5F5626006FB8D4 /* Pill.swift in Sources */,
 				1F6B9DEB1E65D3B400656B47 /* TimelineView.swift in Sources */,
 				1F6B9DE81E64C7D500656B47 /* DefineCurveView.swift in Sources */,
+				1F3B757A1E7058F900A555D0 /* LevelSelectView.swift in Sources */,
 				1F6353001E5E064D00BD1800 /* ViewController.swift in Sources */,
 				1F6B9DEE1E65DFBB00656B47 /* PillView.swift in Sources */,
 				1FC21C501E5F5D8B006FB8D4 /* PillPickerView.swift in Sources */,

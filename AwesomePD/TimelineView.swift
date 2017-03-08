@@ -15,7 +15,7 @@ protocol TimelineViewProtocol {
   func pillShouldEdit(pillView: PillView)
 }
 
-class TimelineView: UIView, PillPickerViewDelegate {
+class TimelineView: UIView, PillPickerViewDelegate, LevelSelectViewDelegate {
   
   // Constants
   let timeStep: Double = 0.25 // For snapping pills to timeline
@@ -24,6 +24,7 @@ class TimelineView: UIView, PillPickerViewDelegate {
   // Views
   let chartView = LineChartView()
   let pillPickerView: PillPickerView!
+  let levelSelectView = LevelSelectView()
   var timelinePillViews: [PillView] = []
   var pillViewLongPressed: PillView?
   var pillViewBeingAdded: PillView?
@@ -44,6 +45,8 @@ class TimelineView: UIView, PillPickerViewDelegate {
   var delegate: TimelineViewProtocol?
   var wakeTime: Double = 6.0
   var sleepTime: Double = 22.0
+  var highLimit: Double = 7.0
+  var lowLimit: Double = 3.0
   
   // MARK: Init
   
@@ -76,6 +79,12 @@ class TimelineView: UIView, PillPickerViewDelegate {
     doubleTap.numberOfTapsRequired = 1
     chartView.addGestureRecognizer(doubleTap)
     
+    // Level Select View
+    setLimitsForMode(mode: .Medium)
+    levelSelectView.setMode(mode: .Medium)
+    levelSelectView.delegate = self
+    addSubview(levelSelectView)
+    
     // Pillpicker
     pillPickerView.delegate = self
     addSubview(pillPickerView)
@@ -90,11 +99,17 @@ class TimelineView: UIView, PillPickerViewDelegate {
     addSubview(highScoreLabel)
     
     // Constraints
-    pillPickerView.snp.makeConstraints { (make) in
-      make.top.equalTo(self).offset(30.0)
+    levelSelectView.snp.makeConstraints { (make) in
+      make.top.equalTo(self.chartView)
       make.right.equalTo(self).offset(-30.0)
-      make.bottom.equalTo(self.chartView)
       make.width.equalTo(200.0)
+      make.height.equalTo(180.0)
+    }
+    
+    pillPickerView.snp.makeConstraints { (make) in
+      make.top.equalTo(self.levelSelectView.snp.bottom).offset(20.0)
+      make.left.right.equalTo(self.levelSelectView)
+      make.bottom.equalTo(self.chartView)
     }
     
     chartView.snp.makeConstraints { (make) in
@@ -232,8 +247,6 @@ class TimelineView: UIView, PillPickerViewDelegate {
     }
     
     // Limits for score
-    let highLimit = highLimitLine.limit
-    let lowLimit = lowLimitLine.limit
     var inRangeCount: Int = 0
     var outOfRangeCount: Int = 0
     
@@ -267,6 +280,10 @@ class TimelineView: UIView, PillPickerViewDelegate {
     // Refresh chart with new sets
     chartView.data = LineChartData(dataSets: sets)
     chartView.notifyDataSetChanged()
+    
+    // High/Low limit lines
+    highLimitLine.limit = highLimit
+    lowLimitLine.limit = lowLimit
     
     // Limit lines for wake/sleep
     wakeTimeLimitLine.limit = wakeTime
@@ -516,8 +533,12 @@ class TimelineView: UIView, PillPickerViewDelegate {
         selectedLimitLine = getLimitLineForDataPoint(point: dataPoint)
       } else if gesture.state == .changed {
         if let limitLine = selectedLimitLine {
-          if (limitLine == highLimitLine || limitLine == lowLimitLine) {
-            limitLine.limit = Double(dataPoint.y)
+          if (limitLine == highLimitLine) {
+            highLimit = Double(dataPoint.y)
+            levelSelectView.setMode(mode: nil) // User is manually setting limits, so un-set any difficulty level
+          } else if (limitLine == lowLimitLine) {
+            lowLimit = Double(dataPoint.y)
+            levelSelectView.setMode(mode: nil) // User is manually setting limits, so un-set any difficulty level
           } else if (limitLine == wakeTimeLimitLine) {
             wakeTime = Double(dataPoint.x)
           } else if (limitLine == sleepTimeLimitLine) {
@@ -546,6 +567,20 @@ class TimelineView: UIView, PillPickerViewDelegate {
     }
   }
   
+  func setLimitsForMode(mode: DifficultyLevel) {
+    switch mode {
+    case .Easy:
+      lowLimit = 1.0
+      highLimit = 9.0
+    case .Medium:
+      lowLimit = 3.0
+      highLimit = 6.0
+    case .Hard:
+      lowLimit = 4.0
+      highLimit = 5.0
+    }
+  }
+
   // MARK: Refresh pill data from curve definition
   
   func refreshPillData(pill: Pill, profileData: [DoublePoint]) {
@@ -557,6 +592,13 @@ class TimelineView: UIView, PillPickerViewDelegate {
       }
     }
     
+    recalcData()
+  }
+  
+  // MARK: LevelSelectViewDelegate
+  
+  func modeSelected(mode: DifficultyLevel) {
+    setLimitsForMode(mode: mode)
     recalcData()
   }
   
