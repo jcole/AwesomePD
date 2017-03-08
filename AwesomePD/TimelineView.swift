@@ -28,6 +28,8 @@ class TimelineView: UIView, PillPickerViewDelegate {
   var pillViewLongPressed: PillView?
   var pillViewBeingAdded: PillView?
   var scoreLabel = UILabel()
+  var highScoreLabel = UILabel()
+  var highScore:Double = 0.0
   
   // Chart objects
   let totalSet = LineChartDataSet()
@@ -79,6 +81,10 @@ class TimelineView: UIView, PillPickerViewDelegate {
     scoreLabel.font = UIFont.systemFont(ofSize: 14.0)
     addSubview(scoreLabel)
     
+    highScoreLabel.textAlignment = .left
+    highScoreLabel.font = UIFont.systemFont(ofSize: 12.0)
+    addSubview(highScoreLabel)
+    
     // Constraints
     pillPickerView.snp.makeConstraints { (make) in
       make.top.equalTo(self).offset(30.0)
@@ -97,6 +103,12 @@ class TimelineView: UIView, PillPickerViewDelegate {
       make.left.right.equalTo(self.pillPickerView)
       make.height.equalTo(30.0)
       make.top.equalTo(self.pillPickerView.snp.bottom).offset(10.0)
+    }
+    
+    highScoreLabel.snp.makeConstraints { (make) in
+      make.width.height.equalTo(self.scoreLabel)
+      make.left.equalTo(self.scoreLabel)
+      make.top.equalTo(self.scoreLabel.snp.bottom).offset(10.0)
     }
   }
   
@@ -240,14 +252,36 @@ class TimelineView: UIView, PillPickerViewDelegate {
     chartView.notifyDataSetChanged()
     
     // Update score
-    let score = Int(100 * CGFloat(inRangeCount) / CGFloat(inRangeCount + outOfRangeCount))
-    let pctString = "\(score)%"
-    let attributedString = NSMutableAttributedString(string: "\(pctString) in range")
-    attributedString.addAttributes(
+    let score: Double = Double(inRangeCount) / Double(inRangeCount + outOfRangeCount)
+    updateScore(currentScore: score)
+  }
+  
+  func updateScore(currentScore: Double) {
+    if currentScore > highScore {
+      highScore = currentScore
+    }
+    
+    // Update score
+    let currentScorePercentString = formatPercent(pct: currentScore)
+    let attributedCurrentScoreString = NSMutableAttributedString(string: "\(currentScorePercentString) in range")
+    attributedCurrentScoreString.addAttributes(
       [NSFontAttributeName : UIFont.boldSystemFont(ofSize: 22.0)],
-      range: NSRange(location: 0, length: pctString.characters.count)
+      range: NSRange(location: 0, length: currentScorePercentString.characters.count)
     )
-    scoreLabel.attributedText = attributedString
+    scoreLabel.attributedText = attributedCurrentScoreString
+    
+    let highScorePercentString = formatPercent(pct: highScore)
+    let attributedHighScoreString = NSMutableAttributedString(string: "\(highScorePercentString) highest score")
+    attributedHighScoreString.addAttributes(
+      [NSFontAttributeName : UIFont.boldSystemFont(ofSize: 22.0)],
+      range: NSRange(location: 0, length: highScorePercentString.characters.count)
+    )
+    highScoreLabel.attributedText = attributedHighScoreString
+  }
+  
+  func formatPercent(pct: Double) -> String {
+    let scorePct: Int = Int(100.0 * pct)
+    return "\(scorePct)%"
   }
   
   // MARK: PillPickerViewDelegate
