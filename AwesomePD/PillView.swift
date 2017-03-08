@@ -65,17 +65,6 @@ class PillView: UIView {
     }
   }
   
-  // MARK: Formatted start time
-  
-  func formattedStartTime() -> String {
-    let hour = Int(pill.startTime)
-    let hourString = String(format: "%02d", hour)
-    let min = Int((pill.startTime - floor(pill.startTime)) * 60)
-    let minString = String(format: "%02d", min)
-    
-    return "\(hourString):\(minString)"
-  }
-  
   // MARK: Clone
   
   func clone() -> PillView {

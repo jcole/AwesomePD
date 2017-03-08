@@ -37,9 +37,13 @@ class TimelineView: UIView, PillPickerViewDelegate {
   var highLimitLine: ChartLimitLine!
   var selectedLimitLine: ChartLimitLine?
   var pillBeingAddedLimitLine: ChartLimitLine!
+  var wakeTimeLimitLine: ChartLimitLine!
+  var sleepTimeLimitLine: ChartLimitLine!
   
   // Data
   var delegate: TimelineViewProtocol?
+  var wakeTime: Double = 6.0
+  var sleepTime: Double = 22.0
   
   // MARK: Init
   
@@ -154,6 +158,19 @@ class TimelineView: UIView, PillPickerViewDelegate {
     pillBeingAddedLimitLine.enabled = false
     chartView.xAxis.addLimitLine(pillBeingAddedLimitLine)
     
+    // Wake and sleep limit lines
+    wakeTimeLimitLine = ChartLimitLine(limit: wakeTime)
+    wakeTimeLimitLine.valueTextColor = UIColor.white
+    wakeTimeLimitLine.lineWidth = 1.0
+    wakeTimeLimitLine.lineColor = UIColor(red: 0.0, green: 1.0, blue: 1.0, alpha: 0.8) // Cyan
+    chartView.xAxis.addLimitLine(wakeTimeLimitLine)
+
+    sleepTimeLimitLine = ChartLimitLine(limit: sleepTime)
+    sleepTimeLimitLine.valueTextColor = UIColor.white
+    sleepTimeLimitLine.lineWidth = 1.0
+    sleepTimeLimitLine.lineColor = UIColor(red: 0.0, green: 1.0, blue: 1.0, alpha: 0.8) // Cyan
+    chartView.xAxis.addLimitLine(sleepTimeLimitLine)
+
     // Total data set
     totalSet.label = "total effect"
     totalSet.setColor(UIColor.yellow)
@@ -222,7 +239,7 @@ class TimelineView: UIView, PillPickerViewDelegate {
     
     // Calculate totals and score
     var totalData:[DoublePoint] = []
-    for xValue in stride(from: chartMinTime, to: chartMaxTime, by: totalStep) {
+    for xValue in stride(from: wakeTime, to: sleepTime, by: totalStep) {
       var totalVal:Double = 0
       sets.forEach({ (set) in
         if Double(xValue) >= set.xMin {
@@ -250,6 +267,12 @@ class TimelineView: UIView, PillPickerViewDelegate {
     // Refresh chart with new sets
     chartView.data = LineChartData(dataSets: sets)
     chartView.notifyDataSetChanged()
+    
+    // Limit lines for wake/sleep
+    wakeTimeLimitLine.limit = wakeTime
+    wakeTimeLimitLine.label = "Wake\n\(formatTime(dayFraction: wakeTime))"
+    sleepTimeLimitLine.limit = sleepTime
+    sleepTimeLimitLine.label = "Sleep\n\(formatTime(dayFraction: sleepTime))"
     
     // Update score
     let score: Double = Double(inRangeCount) / Double(inRangeCount + outOfRangeCount)
@@ -394,7 +417,7 @@ class TimelineView: UIView, PillPickerViewDelegate {
   func adjustTimelinePillViewLocationBasedOnStartTime(pillView: PillView) {
     let locationX = locationForTime(time: pillView.pill.startTime)
     
-    pillView.timeLabel.text = pillView.formattedStartTime()
+    pillView.timeLabel.text = formatTime(dayFraction: pillView.pill.startTime)
     
     pillView.snp.remakeConstraints { (make) in
       make.width.equalTo(100.0)
@@ -493,7 +516,13 @@ class TimelineView: UIView, PillPickerViewDelegate {
         selectedLimitLine = getLimitLineForDataPoint(point: dataPoint)
       } else if gesture.state == .changed {
         if let limitLine = selectedLimitLine {
-          limitLine.limit = Double(dataPoint.y)
+          if (limitLine == highLimitLine || limitLine == lowLimitLine) {
+            limitLine.limit = Double(dataPoint.y)
+          } else if (limitLine == wakeTimeLimitLine) {
+            wakeTime = Double(dataPoint.x)
+          } else if (limitLine == sleepTimeLimitLine) {
+            sleepTime = Double(dataPoint.x)
+          }
           recalcData()
         }
       }
@@ -508,7 +537,11 @@ class TimelineView: UIView, PillPickerViewDelegate {
       return lowLimitLine
     } else if  abs(point.y - CGFloat(highLimitLine.limit)) < margin {
       return highLimitLine
-    } else {
+    } else if abs(point.x - CGFloat(wakeTimeLimitLine.limit)) < margin {
+      return wakeTimeLimitLine
+    } else if abs(point.x - CGFloat(sleepTimeLimitLine.limit)) < margin {
+      return sleepTimeLimitLine
+    }else {
       return nil
     }
   }

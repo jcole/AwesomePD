@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		1F3B75781E7055FE00A555D0 /* TimeFormatter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1F3B75771E7055FE00A555D0 /* TimeFormatter.swift */; };
 		1F44159B1E6DC4F200D84EED /* AwesomePDTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1F44159A1E6DC4F200D84EED /* AwesomePDTests.swift */; };
 		1F6352FE1E5E064D00BD1800 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1F6352FD1E5E064D00BD1800 /* AppDelegate.swift */; };
 		1F6353001E5E064D00BD1800 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1F6352FF1E5E064D00BD1800 /* ViewController.swift */; };
@@ -37,6 +38,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		1F3B75771E7055FE00A555D0 /* TimeFormatter.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TimeFormatter.swift; sourceTree = "<group>"; };
 		1F4415981E6DC4F100D84EED /* AwesomePDTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = AwesomePDTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		1F44159A1E6DC4F200D84EED /* AwesomePDTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AwesomePDTests.swift; sourceTree = "<group>"; };
 		1F44159C1E6DC4F200D84EED /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -177,6 +179,7 @@
 				1FE06B191E661B5200B9C068 /* DataConversion.swift */,
 				1FE06B1B1E6624E700B9C068 /* ChartLib.swift */,
 				1FE06B1D1E69DBD500B9C068 /* UIColorExtension.swift */,
+				1F3B75771E7055FE00A555D0 /* TimeFormatter.swift */,
 			);
 			name = Lib;
 			sourceTree = "<group>";
@@ -369,6 +372,7 @@
 				1F6B9DEE1E65DFBB00656B47 /* PillView.swift in Sources */,
 				1FC21C501E5F5D8B006FB8D4 /* PillPickerView.swift in Sources */,
 				1FE06B1C1E6624E700B9C068 /* ChartLib.swift in Sources */,
+				1F3B75781E7055FE00A555D0 /* TimeFormatter.swift in Sources */,
 				1FE06B181E660D9C00B9C068 /* SmoothLinePoints.swift in Sources */,
 				1FE06B1A1E661B5200B9C068 /* DataConversion.swift in Sources */,
 				1FE06B151E660C1900B9C068 /* CubicCurveAlgorithm.swift in Sources */,
@@ -566,6 +570,7 @@
 				1F4415A01E6DC4F200D84EED /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		1F6352F51E5E064D00BD1800 /* Build configuration list for PBXProject "AwesomePD" */ = {
 			isa = XCConfigurationList;
